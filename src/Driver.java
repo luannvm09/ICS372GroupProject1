@@ -29,58 +29,66 @@ public class Driver {
 		System.out.println(menu);
 		boolean continueApplication = true;
 		while( continueApplication ) {
-			int userInput = scanner.nextInt();
-			switch( userInput ) {
-			case(0):
-				System.exit(0);
-			case (1):
-				//enroll a member
+			int userInput;
+			try {
+				userInput = scanner.nextInt();
+				switch( userInput ) {
+				case(0):
+					System.out.println("Program Succesfully close");
+					System.exit(0);
+				case (1):
+					//enroll a member
+					break;
+				case(2):
+					//remove a member
+					break;
+				case(3):
+					//add a product
+					break;
+				case(4):
+					//check out a members products
+					break;
+				case(5):
+					//process a shipment
+					break;
+				case(6):
+					//change product price
+					break;
+				case(7):
+					//retrieve prod info
+					break;
+				case(8):
+					//retrieve member info
+					break;
+				case(9):
+					//print transactions
+					break;
+				case(10):
+					//list outstanding orders
+					break;
+				case(11):
+					//list member and member info
+					break;
+				case(12):
+					//list prods and prod info
+					break;
+				case(13):
+					//save
+					break;
+				case(14):
+					System.out.println(menu);
 				break;
-			case(2):
-				//remove a member
-				break;
-			case(3):
-				//add a product
-				break;
-			case(4):
-				//check out a members products
-				break;
-			case(5):
-				//process a shipment
-				break;
-			case(6):
-				//change product price
-				break;
-			case(7):
-				//retrieve prod info
-				break;
-			case(8):
-				//retrieve member info
-				break;
-			case(9):
-				//print transactions
-				break;
-			case(10):
-				//list outstanding orders
-				break;
-			case(11):
-				//list member and member info
-				break;
-			case(12):
-				//list prods and prod info
-				break;
-			case(13):
-				//save
-				break;
-			case(14):
-				System.out.println(menu);
-			break;
-			default:
-				System.out.println("Invalid entry. Enter 14 for help");
+				default:
+					System.out.println("Invalid entry. Enter 14 for help");
+				}
+				} catch (Exception e) {
+					System.out.println("Invalid entry. Restart Program.");
+					System.exit(0);
+				}
 
-			}
 		}
-
 	}
 
 }
+
+
