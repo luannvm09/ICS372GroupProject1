@@ -130,56 +130,56 @@ public class UserInterface {
 			try {
 				int userChoice = getIntegerInput("Enter: ");
 				switch(userChoice) {
-				case(0):
+				case(EXIT):
 					System.out.println("Program Succesfully close");
 				System.exit(0);
-				case (1):
+				case (ADD_MEMBER):
 					//enroll a member
 					break;
-				case(2):
+				case(REMOVE_MEMBER):
 					//remove a member
 					break;
-				case(3):
+				case(ADD_PRODUCT):
 					//add a product
 					break;
-				case(4):
+				case(CHECKOUT):
 					//check out a members products
 					break;
-				case(5):
+				case(PROCESS_SHIPMENT):
 					//process a shipment
 					break;
-				case(6):
+				case(CHANGE_PRODUCT_PRICE):
 					//change product price
 					break;
-				case(7):
+				case(PRODUCT_INFO):
 					//retrieve prod info
 					break;
-				case(8):
+				case(MEMBER_INFO):
 					//retrieve member info
 					break;
-				case(9):
+				case(PRINT_TRANSACTIONS):
 					//print transactions
 					break;
-				case(10):
+				case(OUTSTANDING_ORDERS):
 					//list outstanding orders
 					break;
-				case(11):
+				case(LIST_PRODUCTS):
 					//list member and member info
 					break;
-				case(12):
+				case(LIST_MEMBERS):
 					//list prods and prod info
 					break;
-				case(13):
+				case(SAVE):
 					//save
 					break;
-				case(14):
+				case(HELP):
 					System.out.println(showMenu());
 				break;
 				default:
-					System.out.println("Invalid entry. Enter 14 for help");
+					System.out.println("Invalid entry. Enter " + HELP + " for help");
 				}
 			} catch (Exception e) {
-				System.out.println("Invalid entry. Restart Program.");
+				System.out.println("Unexpected Error. Restart Program.");
 				System.exit(0);
 			}
 		}
