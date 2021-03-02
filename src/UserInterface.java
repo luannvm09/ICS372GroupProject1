@@ -80,7 +80,6 @@ public class UserInterface {
 				String line = reader.readLine();
 				String[] words = line.split("\\s");
 				return words[0];
-
 			}catch(IOException ioe) {
 				System.exit(0);
 			}
