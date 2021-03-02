@@ -1,11 +1,12 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
 
+/**
+ *  This is the UserInterface Class that will be used
+ *  to display information to user, and recieve commands.
+ *  It follows Singleton Pattern
+ */
 public class UserInterface {
 	private static UserInterface userInterface;
-
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	private static final int EXIT = 0;
 	private static final int ADD_MEMBER = 1;
@@ -27,7 +28,7 @@ public class UserInterface {
 	 * private constructor for singleton pattern
 	 */
 	private UserInterface() {
-		//
+		// check if there is saved data
 	}
 
 	/**
@@ -45,9 +46,9 @@ public class UserInterface {
 
 	/**
 	 * This is a method to get the list of input commands
-	 * @returns menu
+	 * @returns menu - used in help command
 	 */
-	public String showMenu() {
+	private String showMenu() {
 		String menu = "Make a selection, enter: \n"
 				+ ADD_MEMBER + ") Enroll a member\n"
 				+ REMOVE_MEMBER + ") Remove a member\n"
@@ -69,15 +70,15 @@ public class UserInterface {
 
 	/**
 	 * a method to get the first word entered from user.
-	 * @param message
-	 * @return
+	 * @param message - desired message to instruction
+	 * @return the first word of the user input
 	 */
-	public String getFirstWord(String message) {
+	private String getFirstWord(String message) {
 		do {
 			try {
 				System.out.print(message);
 				String line = reader.readLine();
-				String[] words = line.split("\\s"); 
+				String[] words = line.split("\\s");
 				return words[0];
 
 			}catch(IOException ioe) {
@@ -87,17 +88,16 @@ public class UserInterface {
 	}
 
 	/**
-	 *  returns a line of text 
-	 * @param message
-	 * @return
+	 *  returns a line of text entered and shows user a prompt
+	 * @param message - command given
+	 * @return String - answer provided by user
 	 */
-	public String getStringInput(String message) {
+	private String getStringInput(String message) {
 		do {
 			try {
 				System.out.print(message);
 				String line = reader.readLine();
 				return line;
-
 			}catch(IOException ioe) {
 				System.exit(0);
 			}
@@ -105,11 +105,11 @@ public class UserInterface {
 	}
 
 	/**
-	 * A method to get an Int value from user input 
+	 * A method to get an Int value from user input
 	 * @param message
-	 * @return
+	 * @return int value from String input
 	 */
-	public int getIntegerInput(String message) {
+	private int getIntegerInput(String message) {
 		do {
 			try {
 				String rawUserInput = getFirstWord(message);
@@ -122,9 +122,15 @@ public class UserInterface {
 		}while(true);
 	}
 
-	public void showUI() {
+	/**
+	 *  This method catches user inputs, and relies
+	 *  on getIntegerInput and getFirstWordInput to process
+	 *  inputs
+	 *  @param none
+	 *  @return void
+	 */
+	public void showUserInterface() {
 		System.out.println(showMenu());
-		
 		boolean continueApplication = true;
 		while(continueApplication) {
 			try {
@@ -183,7 +189,6 @@ public class UserInterface {
 				System.exit(0);
 			}
 		}
-
 	}
 }
 
