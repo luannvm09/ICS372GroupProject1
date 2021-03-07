@@ -1,3 +1,4 @@
+package ui;
 import java.io.*;
 
 /**
@@ -28,7 +29,7 @@ public class UserInterface {
 	 * private constructor for singleton pattern
 	 */
 	private UserInterface() {
-		// check if there is saved data
+		// FIXME check if there is saved data
 	}
 
 	/**
@@ -139,43 +140,43 @@ public class UserInterface {
 					System.out.println("Program Succesfully close");
 				System.exit(0);
 				case (ADD_MEMBER):
-					//enroll a member
+					// FIXME enroll a member
 					break;
 				case(REMOVE_MEMBER):
-					//remove a member
+					// FIXME remove a member
 					break;
 				case(ADD_PRODUCT):
-					//add a product
+					// FIXME add a product
 					break;
 				case(CHECKOUT):
-					//check out a members products
+					// FIXME check out a members products
 					break;
 				case(PROCESS_SHIPMENT):
-					//process a shipment
+					// FIXME process a shipment
 					break;
 				case(CHANGE_PRODUCT_PRICE):
-					//change product price
+					// FIXME change product price
 					break;
 				case(PRODUCT_INFO):
-					//retrieve prod info
+					// FIXME retrieve prod info
 					break;
 				case(MEMBER_INFO):
-					//retrieve member info
+					// FIXME retrieve member info
 					break;
 				case(PRINT_TRANSACTIONS):
-					//print transactions
+					// FIXME print transactions
 					break;
 				case(OUTSTANDING_ORDERS):
-					//list outstanding orders
+					// FIXME list outstanding orders
 					break;
 				case(LIST_PRODUCTS):
-					//list member and member info
+					// FIXME list member and member info
 					break;
 				case(LIST_MEMBERS):
-					//list prods and prod info
+					// FIXME list prods and prod info
 					break;
 				case(SAVE):
-					//save
+					// FIXME save
 					break;
 				case(HELP):
 					System.out.println(showMenu());
