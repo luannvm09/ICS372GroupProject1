@@ -1,3 +1,4 @@
+package ui;
 import java.io.*;
 
 /**
@@ -28,12 +29,9 @@ public class UserInterface {
 	 * private constructor for singleton pattern
 	 */
 	private UserInterface() {
-		// check if there is saved data
+		// FIXME check if there is saved data
 	}
-
-	// This is Luan 
-	
-	
+  
 	/**
 	 * instance method that returns existing UI if it is already
 	 * created, if not it returns a new UI.
@@ -140,7 +138,7 @@ public class UserInterface {
 				switch(userChoice) {
 				case(EXIT):
 					System.out.println("Program Succesfully close");
-				System.exit(0);
+				  System.exit(0);
 				case (ADD_MEMBER):
 					//enroll a member
 					break;
