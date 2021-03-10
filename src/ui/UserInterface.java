@@ -31,7 +31,7 @@ public class UserInterface {
 	private UserInterface() {
 		// FIXME check if there is saved data
 	}
-
+  
 	/**
 	 * instance method that returns existing UI if it is already
 	 * created, if not it returns a new UI.
@@ -138,45 +138,45 @@ public class UserInterface {
 				switch(userChoice) {
 				case(EXIT):
 					System.out.println("Program Succesfully close");
-				System.exit(0);
+				  System.exit(0);
 				case (ADD_MEMBER):
-					// FIXME enroll a member
+					//enroll a member
 					break;
 				case(REMOVE_MEMBER):
-					// FIXME remove a member
+					//remove a member
 					break;
 				case(ADD_PRODUCT):
-					// FIXME add a product
+					//add a product
 					break;
 				case(CHECKOUT):
-					// FIXME check out a members products
+					//check out a members products
 					break;
 				case(PROCESS_SHIPMENT):
-					// FIXME process a shipment
+					//process a shipment
 					break;
 				case(CHANGE_PRODUCT_PRICE):
-					// FIXME change product price
+					//change product price
 					break;
 				case(PRODUCT_INFO):
-					// FIXME retrieve prod info
+					//retrieve prod info
 					break;
 				case(MEMBER_INFO):
-					// FIXME retrieve member info
+					//retrieve member info
 					break;
 				case(PRINT_TRANSACTIONS):
-					// FIXME print transactions
+					//print transactions
 					break;
 				case(OUTSTANDING_ORDERS):
-					// FIXME list outstanding orders
+					//list outstanding orders
 					break;
 				case(LIST_PRODUCTS):
-					// FIXME list member and member info
+					//list member and member info
 					break;
 				case(LIST_MEMBERS):
-					// FIXME list prods and prod info
+					//list prods and prod info
 					break;
 				case(SAVE):
-					// FIXME save
+					//save
 					break;
 				case(HELP):
 					System.out.println(showMenu());
