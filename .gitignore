@@ -1,10 +1,5 @@
-.project
-.classpath
-
 *.class
 /bin/
 
-.idea/
-*.iml
-
 run.sh
+/target/
