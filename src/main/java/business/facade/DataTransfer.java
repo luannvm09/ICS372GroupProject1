@@ -1,5 +1,6 @@
 package business.facade;
 
+import business.entities.Member;
 import business.entities.Product;
 
 /**
@@ -11,7 +12,6 @@ import business.entities.Product;
  * @author jordan dodd
  */
 public abstract class DataTransfer {
-	// FIXME this class does not contian a setMemberFields() method yet
 	private final static int NONE_INT = Integer.MIN_VALUE;
 	private final static double NONE_DOUBLE = Double.MIN_VALUE;
 	private final static String NONE_STRING = "none";
@@ -142,13 +142,20 @@ public abstract class DataTransfer {
 		this.reorderLevel = product.getReorderLevel();
 	}
 
+	public void setMemberFields(Member member) {
+		this.memberId = member.getMemberId();
+		this.memberName = member.getMemberName();
+		this.memberPhoneNumber = member.getMemberPhoneNumber();
+		this.memberAddress = member.getMemberAddress();
+	}
+
 	/**
 	 * Reset sets all fields to a default value of NONE or constants NONE_INT and
 	 * NONE_DOUBLE. reset() does not return null values, so it is clear when a field
 	 * does not contain meaningful data. Constants are used as to not confuse a
 	 * sentinel value for an actual requested value.
 	 * 
-	 * @param none
+	 * @param
 	 * @return void
 	 */
 	public void reset() {

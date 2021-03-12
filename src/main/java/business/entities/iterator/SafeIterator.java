@@ -1,4 +1,4 @@
-package business.entities.iterators;
+package business.entities.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
