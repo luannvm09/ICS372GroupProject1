@@ -1,5 +1,7 @@
 package business.facade;
 
+import java.util.Calendar;
+
 import business.entities.Member;
 import business.entities.Product;
 
@@ -15,13 +17,16 @@ public abstract class DataTransfer {
 	private final static int NONE_INT = Integer.MIN_VALUE;
 	private final static double NONE_DOUBLE = Double.MIN_VALUE;
 	private final static String NONE_STRING = "none";
+	private final static int NONE_YEAR = 1900;
+	private final static int NONE_MONTH = 1;
+	private final static int NONE_DAY = 1;
 	// Member fields
 	private String memberId;
 	private String memberName;
 	private String memberAddress;
 	private String memberPhoneNumber;
-	private String dateJoined;
-	private String feePaid;
+	private Calendar dateJoined;
+	private double feePaid;
 	// Product fields
 	private String productId;
 	private String productName;
@@ -71,19 +76,19 @@ public abstract class DataTransfer {
 		this.memberPhoneNumber = memberPhoneNumber;
 	}
 
-	public String getDateJoined() {
+	public Calendar getDateJoined() {
 		return this.dateJoined;
 	}
 
-	public void setDateJoined(String dateJoined) {
+	public void setDateJoined(Calendar dateJoined) {
 		this.dateJoined = dateJoined;
 	}
 
-	public String getFeePaid() {
+	public double getFeePaid() {
 		return this.feePaid;
 	}
 
-	public void setFeePaid(String feePaid) {
+	public void setFeePaid(double feePaid) {
 		this.feePaid = feePaid;
 	}
 
@@ -160,12 +165,14 @@ public abstract class DataTransfer {
 	 */
 	public void reset() {
 		// member fields
+		Calendar noneCalendar = Calendar.getInstance();
+		noneCalendar.set(DataTransfer.NONE_YEAR, DataTransfer.NONE_MONTH, DataTransfer.NONE_DAY);
+		dateJoined = noneCalendar;
 		memberId = DataTransfer.NONE_STRING;
 		memberName = DataTransfer.NONE_STRING;
 		memberAddress = DataTransfer.NONE_STRING;
 		memberPhoneNumber = DataTransfer.NONE_STRING;
-		dateJoined = DataTransfer.NONE_STRING;
-		feePaid = DataTransfer.NONE_STRING;
+		feePaid = DataTransfer.NONE_INT;
 		// product fields
 		productId = DataTransfer.NONE_STRING;
 		productName = DataTransfer.NONE_STRING;
