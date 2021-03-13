@@ -122,6 +122,17 @@ public class UserInterface {
 		}while(true);
 	}
 
+	private double getDoubleInput(String message) {
+
+		do {
+			try {
+				String rawUserInput = getFirstWord(message);
+				return Double.parseDouble(rawUserInput);
+			} catch (NumberFormatException nfe) {
+				System.out.println("Input must be in integer or decimal form. Try again.");
+			}
+		} while (true);
+	}
 	/**
 	 *  This method catches user inputs, and relies
 	 *  on getIntegerInput and getFirstWordInput to process
