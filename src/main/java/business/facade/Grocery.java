@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import business.entities.Product;
+import business.entities.iterator.ReadOnlyIterator;
 import business.entities.Member;
 
 public class Grocery implements Serializable {
@@ -70,6 +71,10 @@ public class Grocery implements Serializable {
             return products.iterator();
         }
 
+        public Iterator<Product> safeIterator() {
+            return new ReadOnlyIterator<Product>(products);
+        }
+
         /**
          * String form of the stock collection
          * 
@@ -115,6 +120,10 @@ public class Grocery implements Serializable {
             return members.iterator();
         }
 
+        public Iterator<Member> safeIterator() {
+            return new ReadOnlyIterator<Member>(this.members);
+        }
+
         /**
          * String form of the collection
          * 
@@ -146,4 +155,38 @@ public class Grocery implements Serializable {
         }
     }
 
+    /**
+     * 
+     * Member Functions
+     * 
+     */
+
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    public Result addMember(Request request) {
+        Result result = new Result();
+        Member member = new Member(request.getMemberName(), request.getMemberAddress(), request.getMemberPhoneNumber(),
+                request.getDateJoined(), request.getFeePaid());
+        if (members.insertMember(member)) {
+            result.setResultCode(Result.OPERATION_COMPLETED);
+            result.setMemberFields(member);
+            return result;
+        }
+
+        result.setResultCode(Result.OPERATION_FAILED);
+        return result;
+    }
+
+    public Iterator<Member> getMembers() {
+        return this.members.safeIterator();
+    }
+
+    /**
+     * 
+     * Product Functions
+     * 
+     */
 }

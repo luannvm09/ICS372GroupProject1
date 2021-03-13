@@ -17,8 +17,8 @@ public class Member implements Serializable {
     private String memberName;
     private String memberAddress;
     private String memberPhoneNumber;
-    private String dateJoined;
-    private String feePaid;
+    private double feePaid;
+    private Calendar dateJoined;
 
     private static final String MEMBER_STRING = "M";
     private static int idCounter;
@@ -31,8 +31,8 @@ public class Member implements Serializable {
     private List<Product> productPurchased = new LinkedList<Product>();
     private List<Transaction> transactions = new LinkedList<Transaction>();
 
-    public Member(String memberName, String memberAddress, String memberPhoneNumber, String dateJoined,
-            String feePaid) {
+    public Member(String memberName, String memberAddress, String memberPhoneNumber, Calendar dateJoined,
+            double feePaid) {
         this.memberId = MEMBER_STRING + ++idCounter;
         this.memberName = memberName;
         this.memberAddress = memberAddress;
@@ -84,7 +84,7 @@ public class Member implements Serializable {
      * @return member Id
      */
     public String getMemberId() {
-        return memberId;
+        return this.memberId;
     }
 
     /**
@@ -93,7 +93,7 @@ public class Member implements Serializable {
      * @return member name
      */
     public String getMemberName() {
-        return memberName;
+        return this.memberName;
     }
 
     /**
@@ -111,7 +111,7 @@ public class Member implements Serializable {
      * @return member address
      */
     public String getMemberAddress() {
-        return memberAddress;
+        return this.memberAddress;
     }
 
     /**
@@ -129,7 +129,7 @@ public class Member implements Serializable {
      * @return member phone number
      */
     public String getMemberPhoneNumber() {
-        return memberPhoneNumber;
+        return this.memberPhoneNumber;
     }
 
     /**
@@ -146,8 +146,8 @@ public class Member implements Serializable {
      * 
      * @return member date joined
      */
-    public String getDateJoined() {
-        return dateJoined;
+    public Calendar getDateJoined() {
+        return this.dateJoined;
     }
 
     /**
@@ -155,8 +155,8 @@ public class Member implements Serializable {
      * 
      * @param newDateJoined member's new date joined
      */
-    public void setDateJoined(String newDateJoined) {
-        this.dateJoined = newDateJoined;
+    public void setDateJoined(Calendar dateJoined) {
+        this.dateJoined = dateJoined;
     }
 
     /**
@@ -164,8 +164,8 @@ public class Member implements Serializable {
      * 
      * @return member fee paid
      */
-    public String getFeePaid() {
-        return feePaid;
+    public double getFeePaid() {
+        return this.feePaid;
     }
 
     /**
@@ -173,8 +173,8 @@ public class Member implements Serializable {
      * 
      * @param newFeePaid member's new fee paid
      */
-    public void setFeePaid(String newFeePaid) {
-        this.feePaid = newFeePaid;
+    public void setFeePaid(Double feePaid) {
+        this.feePaid = feePaid;
     }
 
     /**
@@ -188,7 +188,7 @@ public class Member implements Serializable {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + ((memberId == null) ? 0 : memberId.hashCode());
+        result = prime * result + ((this.memberId == null) ? 0 : this.memberId.hashCode());
         return result;
     }
 
@@ -212,7 +212,7 @@ public class Member implements Serializable {
             return false;
         }
         Member otherMember = (Member) object;
-        if (memberId == null) {
+        if (this.memberId == null) {
             if (otherMember.memberId != null) {
                 return false;
             }
@@ -228,7 +228,7 @@ public class Member implements Serializable {
     }
 
     public static void retrieve(ObjectInputStream input) throws IOException, ClassNotFoundException {
-        idCounter = (int) input.readObject();
+        Member.idCounter = (int) input.readObject();
     }
 
 }

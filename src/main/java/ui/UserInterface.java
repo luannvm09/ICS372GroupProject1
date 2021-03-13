@@ -1,14 +1,20 @@
 package ui;
+
 import java.io.*;
+import java.util.Calendar;
+
+import business.facade.Grocery;
+import business.facade.Request;
+import business.facade.Result;
 
 /**
- *  This is the UserInterface Class that will be used
- *  to display information to user, and recieve commands.
- *  It follows Singleton Pattern
+ * This is the UserInterface Class that will be used to display information to
+ * user, and recieve commands. It follows Singleton Pattern
  */
 public class UserInterface {
 	private static UserInterface userInterface;
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	private static Grocery grocery;
 	private static final int EXIT = 0;
 	private static final int ADD_MEMBER = 1;
 	private static final int REMOVE_MEMBER = 2;
@@ -30,23 +36,24 @@ public class UserInterface {
 	 */
 	private UserInterface() {
 		// FIXME check if there is saved data
+		UserInterface.grocery = Grocery.instance();
 	}
-  
+
 	/**
-	 * instance method that returns existing UI if it is already
-	 * created, if not it returns a new UI.
+	 * instance method that returns existing UI if it is already created, if not it
+	 * returns a new UI.
 	 */
 	public static UserInterface instance() {
-		if(userInterface == null) {
+		if (userInterface == null) {
 			return userInterface = new UserInterface();
-		}
-		else {
+		} else {
 			return userInterface;
 		}
 	}
 
 	/**
 	 * This is a method to get the list of input commands
+	 * 
 	 * @returns menu - used in help command
 	 */
 	private String showMenu() {
@@ -71,6 +78,7 @@ public class UserInterface {
 
 	/**
 	 * a method to get the first word entered from user.
+	 * 
 	 * @param message - desired message to instruction
 	 * @return the first word of the user input
 	 */
@@ -81,14 +89,15 @@ public class UserInterface {
 				String line = reader.readLine();
 				String[] words = line.split("\\s");
 				return words[0];
-			}catch(IOException ioe) {
+			} catch (IOException ioe) {
 				System.exit(0);
 			}
-		} while(true);
+		} while (true);
 	}
 
 	/**
-	 *  returns a line of text entered and shows user a prompt
+	 * returns a line of text entered and shows user a prompt
+	 * 
 	 * @param message - command given
 	 * @return String - answer provided by user
 	 */
@@ -98,14 +107,15 @@ public class UserInterface {
 				System.out.print(message);
 				String line = reader.readLine();
 				return line;
-			}catch(IOException ioe) {
+			} catch (IOException ioe) {
 				System.exit(0);
 			}
-		} while(true);
+		} while (true);
 	}
 
 	/**
 	 * A method to get an Int value from user input
+	 * 
 	 * @param message
 	 * @return int value from String input
 	 */
@@ -115,72 +125,101 @@ public class UserInterface {
 				String rawUserInput = getFirstWord(message);
 				Integer userIntegerInput = Integer.valueOf(rawUserInput);
 				return userIntegerInput.intValue();
-			}catch(NumberFormatException nfe) {
-				System.out.println("Input must be a number 0 - 14\n"
-						+ "Enter " + HELP + " for help");
+			} catch (NumberFormatException nfe) {
+				System.out.println("Input must be a number 0 - 14\n" + "Enter " + HELP + " for help");
 			}
-		}while(true);
+		} while (true);
+	}
+
+	private double getDoubleInput(String message) {
+
+		do {
+			try {
+				String rawUserInput = getFirstWord(message);
+				return Double.parseDouble(rawUserInput);
+			} catch (NumberFormatException nfe) {
+				System.out.println("Input must be in integer or decimal form. Try again.");
+			}
+		} while (true);
 	}
 
 	/**
-	 *  This method catches user inputs, and relies
-	 *  on getIntegerInput and getFirstWordInput to process
-	 *  inputs
-	 *  @param none
-	 *  @return void
+	 * Member Helpers
+	 */
+	private void addMember() {
+		Request.instance().setMemberName(getStringInput("Enter new member's name: "));
+		Request.instance().setMemberAddress(getStringInput("Enter new member's address: "));
+		Request.instance().setMemberPhoneNumber(getStringInput("Enter new member's phone #: "));
+		Request.instance().setFeePaid(getDoubleInput("Enter the amount of fee for new member: "));
+		Request.instance().setDateJoined(Calendar.getInstance());
+		Result result = grocery.addMember(Request.instance());
+		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("Could not add member to co-op");
+		} else {
+			System.out.println(result.getMemberName() + "'s id is " + result.getMemberAddress());
+		}
+	}
+
+	/**
+	 * This method catches user inputs, and relies on getIntegerInput and
+	 * getFirstWordInput to process inputs
+	 * 
+	 * @param none
+	 * @return void
 	 */
 	public void showUserInterface() {
 		System.out.println(showMenu());
 		boolean continueApplication = true;
-		while(continueApplication) {
+		while (continueApplication) {
 			try {
 				int userChoice = getIntegerInput("Enter: ");
-				switch(userChoice) {
-				case(EXIT):
+				switch (userChoice) {
+				case (EXIT):
 					System.out.println("Program Succesfully close");
-				  System.exit(0);
+					System.exit(0);
 				case (ADD_MEMBER):
-					//enroll a member
+					addMember();
+					// enroll a member
 					break;
-				case(REMOVE_MEMBER):
-					//remove a member
+				case (REMOVE_MEMBER):
+					// remove a member
 					break;
-				case(ADD_PRODUCT):
-					//add a product
+				case (ADD_PRODUCT):
+					// add a product
 					break;
-				case(CHECKOUT):
-					//check out a members products
+				case (CHECKOUT):
+					// check out a members products
 					break;
-				case(PROCESS_SHIPMENT):
-					//process a shipment
+				case (PROCESS_SHIPMENT):
+					// process a shipment
 					break;
-				case(CHANGE_PRODUCT_PRICE):
-					//change product price
+				case (CHANGE_PRODUCT_PRICE):
+					// change product price
 					break;
-				case(PRODUCT_INFO):
-					//retrieve prod info
+				case (PRODUCT_INFO):
+					// retrieve prod info
 					break;
-				case(MEMBER_INFO):
-					//retrieve member info
+				case (MEMBER_INFO):
+					// retrieve member info
 					break;
-				case(PRINT_TRANSACTIONS):
-					//print transactions
+				case (PRINT_TRANSACTIONS):
+					// print transactions
 					break;
-				case(OUTSTANDING_ORDERS):
-					//list outstanding orders
+				case (OUTSTANDING_ORDERS):
+					// list outstanding orders
 					break;
-				case(LIST_PRODUCTS):
-					//list member and member info
+				case (LIST_PRODUCTS):
+					// list member and member info
 					break;
-				case(LIST_MEMBERS):
-					//list prods and prod info
+				case (LIST_MEMBERS):
+					// list prods and prod info
 					break;
-				case(SAVE):
-					//save
+				case (SAVE):
+					// save
 					break;
-				case(HELP):
+				case (HELP):
 					System.out.println(showMenu());
-				break;
+					break;
 				default:
 					System.out.println("Invalid entry. Enter " + HELP + " for help");
 				}
@@ -191,6 +230,3 @@ public class UserInterface {
 		}
 	}
 }
-
-
-
