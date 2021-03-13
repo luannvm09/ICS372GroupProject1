@@ -7,7 +7,6 @@ import java.util.List;
 
 import business.entities.Product;
 import business.entities.iterator.ReadOnlyIterator;
-import business.entities.iterator.SafeIterator;
 import business.entities.Member;
 
 public class Grocery implements Serializable {
