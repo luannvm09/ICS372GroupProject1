@@ -1,5 +1,11 @@
 package ui;
+
 import java.io.*;
+import java.util.Calendar;
+
+import business.facade.Grocery;
+import business.facade.Request;
+import business.facade.Result;
 
 /**
  * This is the UserInterface Class that will be used to display information to
@@ -8,6 +14,7 @@ import java.io.*;
 public class UserInterface {
 	private static UserInterface userInterface;
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	private static Grocery grocery;
 	private static final int EXIT = 0;
 	private static final int ADD_MEMBER = 1;
 	private static final int REMOVE_MEMBER = 2;
@@ -29,8 +36,9 @@ public class UserInterface {
 	 */
 	private UserInterface() {
 		// FIXME check if there is saved data
+		UserInterface.grocery = Grocery.instance();
 	}
-  
+
 	/**
 	 * instance method that returns existing UI if it is already created, if not it
 	 * returns a new UI.
@@ -138,6 +146,20 @@ public class UserInterface {
 	/**
 	 * Member Helpers
 	 */
+	private void addMember() {
+		Request.instance().setMemberName(getStringInput("Enter new member's name: "));
+		Request.instance().setMemberAddress(getStringInput("Enter new member's address: "));
+		Request.instance().setMemberPhoneNumber(getStringInput("Enter new member's phone #: "));
+		Request.instance().setFeePaid(getDoubleInput("Enter the amount of fee for new member: "));
+		Request.instance().setDateJoined(Calendar.getInstance());
+		Result result = grocery.addMember(Request.instance());
+		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("Could not add member to co-op");
+		} else {
+			System.out.println(result.getMemberName() + "'s id is " + result.getMemberAddress());
+		}
+	}
+
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and
 	 * getFirstWordInput to process inputs
@@ -154,7 +176,7 @@ public class UserInterface {
 				switch (userChoice) {
 				case (EXIT):
 					System.out.println("Program Succesfully close");
-				  System.exit(0);
+					System.exit(0);
 				case (ADD_MEMBER):
 					addMember();
 					// enroll a member
@@ -197,7 +219,7 @@ public class UserInterface {
 					break;
 				case (HELP):
 					System.out.println(showMenu());
-				break;
+					break;
 				default:
 					System.out.println("Invalid entry. Enter " + HELP + " for help");
 				}
@@ -208,6 +230,3 @@ public class UserInterface {
 		}
 	}
 }
-
-
-
