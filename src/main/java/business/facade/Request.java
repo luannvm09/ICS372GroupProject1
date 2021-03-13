@@ -3,7 +3,7 @@ package business.facade;
 import java.util.Calendar;
 
 public class Request extends DataTransfer {
-    private static Request request;
+    private static Request request = null;
     private int stockOnHand;
     private Calendar date;
 
@@ -20,14 +20,14 @@ public class Request extends DataTransfer {
      * @return the only instance
      */
     public static Request instance() {
-        if (request == null) {
-            request = new Request();
+        if (Request.request == null) {
+            Request.request = new Request();
         }
-        return request;
+        return Request.request;
     }
 
     public int getStockOnHand() {
-        return stockOnHand;
+        return this.stockOnHand;
     }
 
     public void setStockOnHand(int stockOnHand) {
@@ -35,7 +35,7 @@ public class Request extends DataTransfer {
     }
 
     public Calendar getDate() {
-        return date;
+        return this.date;
     }
 
     public void setDate(Calendar date) {
