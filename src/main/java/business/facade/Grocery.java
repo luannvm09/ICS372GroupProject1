@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import business.entities.Product;
+import business.entities.iterator.ReadOnlyIterator;
+import business.entities.iterator.SafeIterator;
 import business.entities.Member;
 
 public class Grocery implements Serializable {
@@ -70,6 +72,10 @@ public class Grocery implements Serializable {
             return products.iterator();
         }
 
+        public Iterator<Product> safeIterator() {
+            return new ReadOnlyIterator<Product>(products);
+        }
+
         /**
          * String form of the stock collection
          * 
@@ -113,6 +119,10 @@ public class Grocery implements Serializable {
 
         public Iterator<Member> iterator() {
             return members.iterator();
+        }
+
+        public Iterator<Member> safeIterator() {
+            return new ReadOnlyIterator<Member>(this.members);
         }
 
         /**
