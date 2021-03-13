@@ -56,7 +56,6 @@ public class GroceryTest {
                 assertEquals(testMember.getFeePaid(), fetchedMember.getFeePaid(), 0.001);
                 memberPresent = true;
             }
-            members.remove();
         }
 
         assertTrue("Added member was present in members list.", memberPresent);
