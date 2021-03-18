@@ -1,8 +1,15 @@
 package ui;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 
+import business.entities.Transaction;
 import business.facade.Grocery;
 import business.facade.Request;
 import business.facade.Result;
@@ -57,21 +64,13 @@ public class UserInterface {
 	 * @returns menu - used in help command
 	 */
 	private String showMenu() {
-		String menu = "Make a selection, enter: \n"
-				+ ADD_MEMBER + ") Enroll a member\n"
-				+ REMOVE_MEMBER + ") Remove a member\n"
-				+ ADD_PRODUCT + ") Add a product\n"
-				+ CHECKOUT + ") Check out a member's items\n"
-				+ PROCESS_SHIPMENT + ") Process a shipment\n"
-				+ CHANGE_PRODUCT_PRICE + ") Change the price of a product\n"
-				+ PRODUCT_INFO +") Retrieve product info\n"
-				+ MEMBER_INFO + ") Retrieve member info\n"
-				+ PRINT_TRANSACTIONS + ") Print transactions\n"
-				+ OUTSTANDING_ORDERS + ") List all outstanding orders\n"
-				+ LIST_MEMBERS + ") List all members with member info\n"
-				+ LIST_PRODUCTS +") List all products with product info\n"
-				+ SAVE + ") Save\n"
-				+ HELP + ") Help \n"
+		String menu = "Make a selection, enter: \n" + ADD_MEMBER + ") Enroll a member\n" + REMOVE_MEMBER
+				+ ") Remove a member\n" + ADD_PRODUCT + ") Add a product\n" + CHECKOUT
+				+ ") Check out a member's items\n" + PROCESS_SHIPMENT + ") Process a shipment\n" + CHANGE_PRODUCT_PRICE
+				+ ") Change the price of a product\n" + PRODUCT_INFO + ") Retrieve product info\n" + MEMBER_INFO
+				+ ") Retrieve member info\n" + PRINT_TRANSACTIONS + ") Print transactions\n" + OUTSTANDING_ORDERS
+				+ ") List all outstanding orders\n" + LIST_MEMBERS + ") List all members with member info\n"
+				+ LIST_PRODUCTS + ") List all products with product info\n" + SAVE + ") Save\n" + HELP + ") Help \n"
 				+ "Press " + EXIT + " at any time to quit the application";
 		return menu;
 	}
@@ -144,6 +143,26 @@ public class UserInterface {
 	}
 
 	/**
+	 * method to get a date from user
+	 * 
+	 * @param message -- message shown to user
+	 * @return -- date object input
+	 */
+	private Calendar getDate(String message) {
+		do {
+			try {
+				Calendar date = new GregorianCalendar();
+				String item = getStringInput(message);
+				DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
+				date.setTime(dateFormat.parse(item));
+				return date;
+			} catch (Exception de) {
+				System.out.println("Invalid input. Format input as mm/dd/yy.");
+			}
+		} while (true);
+	}
+
+	/**
 	 * Member Helpers
 	 */
 	private void addMember() {
@@ -158,6 +177,20 @@ public class UserInterface {
 		} else {
 			System.out.println(result.getMemberName() + "'s id is " + result.getMemberAddress());
 		}
+	}
+
+	public void getTransactions() {
+		Request.instance().setMemberId(getStringInput("Enter member id: "));
+		Request.instance()
+				.setStartDate(getDate("Enter the start date of period you want transactions in format mm/dd/yy: "));
+		Request.instance()
+				.setEndDate(getDate("Enter the end date of period you want transactions in format mm/dd/yy: "));
+		Iterator<Transaction> result = grocery.getTransactions(Request.instance());
+		while (result.hasNext()) {
+			Transaction transaction = (Transaction) result.next();
+			System.out.println(transaction.getType() + "   " + transaction.getName() + "\n");
+		}
+		System.out.println("\n End of transactions \n");
 	}
 
 	/**
@@ -203,6 +236,7 @@ public class UserInterface {
 					// retrieve member info
 					break;
 				case (PRINT_TRANSACTIONS):
+					getTransactions();
 					// print transactions
 					break;
 				case (OUTSTANDING_ORDERS):
