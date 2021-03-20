@@ -8,6 +8,7 @@ import java.util.List;
 import business.entities.Member;
 import business.entities.Product;
 import business.entities.Transaction;
+import business.entities.iterator.NameFilteredIterator;
 import business.entities.iterator.ReadOnlyIterator;
 
 public class Grocery implements Serializable {
@@ -71,6 +72,16 @@ public class Grocery implements Serializable {
 		public Iterator<Product> iterator() {
 			return products.iterator();
 		}
+		
+		/**
+		 * gives you an iterator that contains products whose name start with specified string
+		 * @param name  the start of the product name you want
+		 * @return  an iterator of products whose name start with specified string
+		 */
+		public Iterator<Product> nameIterator(String name) {
+			return new NameFilteredIterator<Product>(products.iterator(),
+					name);
+		}
 
 		public Iterator<Product> safeIterator() {
 			return new ReadOnlyIterator<Product>(products);
@@ -119,6 +130,16 @@ public class Grocery implements Serializable {
 
 		public Iterator<Member> iterator() {
 			return members.iterator();
+		}
+		
+		/***
+		 * gives you an iterator that contains members whose name start with specified string
+		 * @param name  the start of the member name you want
+		 * @return  an iterator of members whose name start with specified string
+		 */
+		public Iterator<Member> nameIterator(String name) {
+			return new NameFilteredIterator<Member>(members.iterator(),
+					name);
 		}
 
 		public Iterator<Member> safeIterator() {
@@ -184,6 +205,15 @@ public class Grocery implements Serializable {
 	public Iterator<Member> getMembers() {
 		return this.members.safeIterator();
 	}
+	
+	/**
+	 * gets an iterator of members whose name start with specified string
+	 * @param name the start of the member name you want 
+	 * @return an iterator of members whose name start with specified string
+	 */
+	public Iterator<Member> retreiveMembers(Request request) {
+		return this.members.nameIterator(request.getMemberName());
+	}
 
 	/**
 	 * Gets transactions of a member
@@ -207,4 +237,14 @@ public class Grocery implements Serializable {
 	 * Product Functions
 	 * 
 	 */
+	
+	
+	/**
+	 * gets an iterator of products whose name start with specified string
+	 * @param name the start of the product name you want 
+	 * @return an iterator of products whose name start with specified string
+	 */
+	public Iterator<Product> retreiveProducts(Request request) {
+		return this.stock.nameIterator(request.getProductName());
+	}
 }

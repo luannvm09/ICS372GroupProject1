@@ -10,8 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import business.entities.iterator.FilteredIterator;
+import business.entities.iterator.NameCheck;
 
-public class Member implements Serializable {
+public class Member implements Serializable, NameCheck {
 	private static final long serialVersionUID = 1L;
 	private String memberId;
 	private String memberName;
@@ -177,6 +178,32 @@ public class Member implements Serializable {
 	public void setFeePaid(Double feePaid) {
 		this.feePaid = feePaid;
 	}
+	
+	/**
+	 * checks whether a member name starts with specified string
+	 * @param  string you are checking for
+	 * 
+	 */
+	@Override
+	public boolean nameCheck(String name) {
+		return this.memberName.startsWith(name);
+	}
+	
+	/**
+	 * a way of representing member different from toString
+	 * @return string representation of member object
+	 */
+	public String output() {
+		return "Member id "+ this.memberId + "; address " + this.memberAddress + "; fee paid $" + this.feePaid;
+	}
+	
+	/**
+	 * returns string representation of member object
+	 */
+	@Override
+    public String toString() {
+        return "Member name " + this.memberName+ "; date joined " + this.dateJoined + "; address " + this.memberAddress + "; phone number " + this.memberPhoneNumber ;
+    }
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the
