@@ -8,7 +8,6 @@ import java.util.List;
 import business.entities.Member;
 import business.entities.Product;
 import business.entities.Transaction;
-import business.entities.iterator.NameFilteredIterator;
 import business.entities.iterator.ReadOnlyIterator;
 
 public class Grocery implements Serializable {
@@ -74,13 +73,21 @@ public class Grocery implements Serializable {
 		}
 		
 		/**
-		 * gives you an iterator that contains products whose name start with specified string
-		 * @param name  the start of the product name you want
-		 * @return  an iterator of products whose name start with specified string
+		 * gives you  a list of products whose name starts with specified string
+		 * @param name  string of beginning of product name you want
+		 * @return  a list with products whose name starts with name
 		 */
-		public Iterator<Product> nameIterator(String name) {
-			return new NameFilteredIterator<Product>(products.iterator(),
-					name);
+		public List<Product> retrieveProducts(String name){
+			List<Product> names = new LinkedList<Product>();
+			Iterator<Product> iterator = stock.iterator();
+			while (iterator.hasNext()) {
+				Product product = iterator.next();
+				if(product.getProductName().startsWith(name)) {
+					names.add(product);
+				}
+			}
+			return names;
+			
 		}
 
 		public Iterator<Product> safeIterator() {
@@ -132,14 +139,22 @@ public class Grocery implements Serializable {
 			return members.iterator();
 		}
 		
-		/***
-		 * gives you an iterator that contains members whose name start with specified string
-		 * @param name  the start of the member name you want
-		 * @return  an iterator of members whose name start with specified string
+		/**
+		 * gives you  a list of members whose name starts with specified string
+		 * @param name  string of beginning of member name you want
+		 * @return  a list with members whose name starts with name
 		 */
-		public Iterator<Member> nameIterator(String name) {
-			return new NameFilteredIterator<Member>(members.iterator(),
-					name);
+		public List<Member> retrieveMembers(String name){
+			List<Member> names = new LinkedList<Member>();
+			Iterator<Member> iterator = members.iterator();
+			while (iterator.hasNext()) {
+				Member member = iterator.next();
+				if(member.getMemberName().startsWith(name)) {
+					names.add(member);
+				}
+			}
+			return names;
+			
 		}
 
 		public Iterator<Member> safeIterator() {
@@ -212,7 +227,7 @@ public class Grocery implements Serializable {
 	 * @return an iterator of members whose name start with specified string
 	 */
 	public Iterator<Member> retreiveMembers(Request request) {
-		return this.members.nameIterator(request.getMemberName());
+		return new ReadOnlyIterator<Member>(this.members.retrieveMembers(request.getMemberName()));
 	}
 
 	/**
@@ -245,6 +260,6 @@ public class Grocery implements Serializable {
 	 * @return an iterator of products whose name start with specified string
 	 */
 	public Iterator<Product> retreiveProducts(Request request) {
-		return this.stock.nameIterator(request.getProductName());
+		return new ReadOnlyIterator<Product>(this.stock.retrieveProducts(request.getProductName()));
 	}
 }

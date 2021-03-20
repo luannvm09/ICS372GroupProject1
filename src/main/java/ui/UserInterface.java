@@ -193,7 +193,7 @@ public class UserInterface {
 		System.out.println("\n End of transactions \n");
 	}
 	
-//	needs further work to make it safe, and not allow members to be accessed
+//	needs further work 
 //	public void retrieveMembers() {
 //		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
 //		Iterator<Member> result = grocery.retreiveMembers(Request.instance());
@@ -207,7 +207,7 @@ public class UserInterface {
 	 * Product Helpers
 	 */
 	
-// needs further work to make it safe, and not allow products to be accessed
+// needs further work 
 //	public void retrieveProducts() {
 //		Request.instance().setProductName(getStringInput("Enter beginning of product name: "));
 //		Iterator<Product> result = grocery.retreiveProducts(Request.instance());

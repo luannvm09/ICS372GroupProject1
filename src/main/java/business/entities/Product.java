@@ -2,13 +2,11 @@ package business.entities;
 
 import java.io.Serializable;
 
-import business.entities.iterator.NameCheck;
-
 // FIXME this is the beginning of the Product class, the product id needs to be unique,
 // I'm not sure if we wanted to implement that in the GroceryStore Facade, or here in Product
 // I've written some classes like hashCode() and equals() based on the assumption that product's ID
 // will be unique
-public class Product implements Serializable, NameCheck {
+public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String productName;
 	private String productId;
@@ -69,15 +67,6 @@ public class Product implements Serializable, NameCheck {
 	public void setCurrentPrice(double currentPrice) {
 		this.currentPrice = currentPrice;
 		System.out.println("Product: " + productName + "\tNew Price: " + currentPrice);
-	}
-	
-	/**
-	 * checks whether the product name starts with specified string
-	 * @param  string you are checking for
-	 */
-	@Override
-	public boolean nameCheck(String name) {
-		return this.productName.startsWith(name); 
 	}
 	
 	/**

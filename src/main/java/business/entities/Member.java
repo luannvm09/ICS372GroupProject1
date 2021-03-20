@@ -10,9 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import business.entities.iterator.FilteredIterator;
-import business.entities.iterator.NameCheck;
 
-public class Member implements Serializable, NameCheck {
+public class Member implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String memberId;
 	private String memberName;
@@ -179,15 +178,6 @@ public class Member implements Serializable, NameCheck {
 		this.feePaid = feePaid;
 	}
 	
-	/**
-	 * checks whether a member name starts with specified string
-	 * @param  string you are checking for
-	 * 
-	 */
-	@Override
-	public boolean nameCheck(String name) {
-		return this.memberName.startsWith(name);
-	}
 	
 	/**
 	 * a way of representing member different from toString
@@ -219,7 +209,7 @@ public class Member implements Serializable, NameCheck {
 		result = prime * result + ((this.memberId == null) ? 0 : this.memberId.hashCode());
 		return result;
 	}
-
+ 
 	/**
 	 * An equals method that checks to see if two members are equal. This equals
 	 * method is based on the member ID and assumes that each member has a unique
