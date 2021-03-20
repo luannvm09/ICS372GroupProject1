@@ -192,6 +192,31 @@ public class UserInterface {
 		}
 		System.out.println("\n End of transactions \n");
 	}
+	
+//	needs further work 
+//	public void retrieveMembers() {
+//		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
+//		Iterator<Member> result = grocery.retreiveMembers(Request.instance());
+//		while (result.hasNext()) {
+//			Member member = result.next();
+//			System.out.println(member.output());
+//		}
+//	}
+	
+	/**
+	 * Product Helpers
+	 */
+	
+// needs further work 
+//	public void retrieveProducts() {
+//		Request.instance().setProductName(getStringInput("Enter beginning of product name: "));
+//		Iterator<Product> result = grocery.retreiveProducts(Request.instance());
+//		while (result.hasNext()) {
+//			Product product = result.next();
+//			System.out.println(product);
+//		}
+//		System.out.println("\n");
+//	}
 
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and

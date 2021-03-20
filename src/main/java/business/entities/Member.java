@@ -177,6 +177,23 @@ public class Member implements Serializable {
 	public void setFeePaid(Double feePaid) {
 		this.feePaid = feePaid;
 	}
+	
+	
+	/**
+	 * a way of representing member different from toString
+	 * @return string representation of member object
+	 */
+	public String output() {
+		return "Member id "+ this.memberId + "; address " + this.memberAddress + "; fee paid $" + this.feePaid;
+	}
+	
+	/**
+	 * returns string representation of member object
+	 */
+	@Override
+    public String toString() {
+        return "Member name " + this.memberName+ "; date joined " + this.dateJoined + "; address " + this.memberAddress + "; phone number " + this.memberPhoneNumber ;
+    }
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the
@@ -192,7 +209,7 @@ public class Member implements Serializable {
 		result = prime * result + ((this.memberId == null) ? 0 : this.memberId.hashCode());
 		return result;
 	}
-
+ 
 	/**
 	 * An equals method that checks to see if two members are equal. This equals
 	 * method is based on the member ID and assumes that each member has a unique

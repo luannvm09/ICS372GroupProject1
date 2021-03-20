@@ -71,6 +71,24 @@ public class Grocery implements Serializable {
 		public Iterator<Product> iterator() {
 			return products.iterator();
 		}
+		
+		/**
+		 * gives you  a list of products whose name starts with specified string
+		 * @param name  string of beginning of product name you want
+		 * @return  a list with products whose name starts with name
+		 */
+		public List<Product> retrieveProducts(String name){
+			List<Product> names = new LinkedList<Product>();
+			Iterator<Product> iterator = stock.iterator();
+			while (iterator.hasNext()) {
+				Product product = iterator.next();
+				if(product.getProductName().startsWith(name)) {
+					names.add(product);
+				}
+			}
+			return names;
+			
+		}
 
 		public Iterator<Product> safeIterator() {
 			return new ReadOnlyIterator<Product>(products);
@@ -119,6 +137,24 @@ public class Grocery implements Serializable {
 
 		public Iterator<Member> iterator() {
 			return members.iterator();
+		}
+		
+		/**
+		 * gives you  a list of members whose name starts with specified string
+		 * @param name  string of beginning of member name you want
+		 * @return  a list with members whose name starts with name
+		 */
+		public List<Member> retrieveMembers(String name){
+			List<Member> names = new LinkedList<Member>();
+			Iterator<Member> iterator = members.iterator();
+			while (iterator.hasNext()) {
+				Member member = iterator.next();
+				if(member.getMemberName().startsWith(name)) {
+					names.add(member);
+				}
+			}
+			return names;
+			
 		}
 
 		public Iterator<Member> safeIterator() {
@@ -184,6 +220,15 @@ public class Grocery implements Serializable {
 	public Iterator<Member> getMembers() {
 		return this.members.safeIterator();
 	}
+	
+	/**
+	 * gets an iterator of members whose name start with specified string
+	 * @param name the start of the member name you want 
+	 * @return an iterator of members whose name start with specified string
+	 */
+	public Iterator<Member> retrieveMembers(Request request) {
+		return new ReadOnlyIterator<Member>(this.members.retrieveMembers(request.getMemberName()));
+	}
 
 	/**
 	 * Gets transactions of a member
@@ -207,4 +252,14 @@ public class Grocery implements Serializable {
 	 * Product Functions
 	 * 
 	 */
+	
+	
+	/**
+	 * gets an iterator of products whose name start with specified string
+	 * @param name the start of the product name you want 
+	 * @return an iterator of products whose name start with specified string
+	 */
+	public Iterator<Product> retrieveProducts(Request request) {
+		return new ReadOnlyIterator<Product>(this.stock.retrieveProducts(request.getProductName()));
+	}
 }
