@@ -207,4 +207,7 @@ public class Grocery implements Serializable {
 	 * Product Functions
 	 * 
 	 */
+	public ReadOnlyIterator<Product> getStock(){
+		return new ReadOnlyIterator<Product>(this.stock.products);
+	}
 }

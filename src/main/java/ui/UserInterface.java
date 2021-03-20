@@ -9,7 +9,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import business.entities.Product;
 import business.entities.Transaction;
+import business.entities.iterator.ReadOnlyIterator;
 import business.facade.Grocery;
 import business.facade.Request;
 import business.facade.Result;
@@ -113,12 +115,13 @@ public class UserInterface {
 	}
 
 	/**
-	 * A method to get an Int value from user input
+	 * A method to get an Int value from user input to be used in
+	 * for making a command
 	 * 
 	 * @param message
 	 * @return int value from String input
 	 */
-	private int getIntegerInput(String message) {
+	private int getUIIntegerInput(String message) {
 		do {
 			try {
 				String rawUserInput = getFirstWord(message);
@@ -129,7 +132,35 @@ public class UserInterface {
 			}
 		} while (true);
 	}
-
+	
+	/**
+	 * getIntegerInput() will be used to get inputs that are not constrained to 0-14
+	 * @param String - message output
+	 * @return int - value from input
+	 */
+	private int getIntegerInput(String message) {
+		do {
+			try {
+				String rawUserInput = getFirstWord(message);
+				Integer userIntegerInput = Integer.valueOf(rawUserInput);
+				if(userIntegerInput > 0 && userIntegerInput < 10_000) {
+					return userIntegerInput.intValue();
+				}
+				else {
+					throw new NumberFormatException();
+				}
+			} catch (NumberFormatException nfe) {
+				System.out.println("Number must be between 0 and 10,000");
+			}
+		} while (true);
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param message
+	 * @return
+	 */
 	private double getDoubleInput(String message) {
 
 		do {
@@ -178,6 +209,19 @@ public class UserInterface {
 			System.out.println(result.getMemberName() + "'s id is " + result.getMemberAddress());
 		}
 	}
+	
+	/**
+	 * Product Helpers
+	 */
+	private void addProduct() {
+		String productName = getStringInput("Enter product name: ");
+		String productId = getStringInput("Enter product ID:  ");
+		int reorderLevel = getIntegerInput("Enter reorder level (1 - 10,000:  "  );
+		int initialStockOnHand = getIntegerInput("Enter initial stock on hand:  ");
+		double initialPrice = getDoubleInput("Enter initial price for product:  ");
+		Product newProduct = new Product(productName, productId, reorderLevel, initialStockOnHand, initialPrice);
+		Request.instance().setProductFields(newProduct);
+	}
 
 	public void getTransactions() {
 		Request.instance().setMemberId(getStringInput("Enter member id: "));
@@ -192,6 +236,18 @@ public class UserInterface {
 		}
 		System.out.println("\n End of transactions \n");
 	}
+	
+	/**
+	 * method called to print all of the available stock on hand
+	 * @param none
+	 * @returns none - prints product list to console
+	 */
+	public void printStock() {
+		ReadOnlyIterator<Product> availableStock = UserInterface.grocery.getStock();
+		while(availableStock.hasNext()) {
+			System.out.println(availableStock);
+		}
+	}
 
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and
@@ -205,7 +261,7 @@ public class UserInterface {
 		boolean continueApplication = true;
 		while (continueApplication) {
 			try {
-				int userChoice = getIntegerInput("Enter: ");
+				int userChoice = getUIIntegerInput("Enter: ");
 				switch (userChoice) {
 				case (EXIT):
 					System.out.println("Program Succesfully close");
@@ -242,11 +298,12 @@ public class UserInterface {
 				case (OUTSTANDING_ORDERS):
 					// list outstanding orders
 					break;
-				case (LIST_PRODUCTS):
+				case (LIST_MEMBERS):
 					// list member and member info
 					break;
-				case (LIST_MEMBERS):
+				case (LIST_PRODUCTS):
 					// list prods and prod info
+					printStock();
 					break;
 				case (SAVE):
 					// save
