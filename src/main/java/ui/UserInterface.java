@@ -15,8 +15,8 @@ import business.facade.Request;
 import business.facade.Result;
 
 /**
- * This is the UserInterface Class that will be used to display information to
- * user, and recieve commands. It follows Singleton Pattern
+ * This is the UserInterface Class that will be used to display information to user, and recieve
+ * commands. It follows Singleton Pattern
  */
 public class UserInterface {
 	private static UserInterface userInterface;
@@ -47,8 +47,8 @@ public class UserInterface {
 	}
 
 	/**
-	 * instance method that returns existing UI if it is already created, if not it
-	 * returns a new UI.
+	 * instance method that returns existing UI if it is already created, if not it returns a new
+	 * UI.
 	 */
 	public static UserInterface instance() {
 		if (userInterface == null) {
@@ -64,13 +64,15 @@ public class UserInterface {
 	 * @returns menu - used in help command
 	 */
 	private String showMenu() {
-		String menu = "Make a selection, enter: \n" + ADD_MEMBER + ") Enroll a member\n" + REMOVE_MEMBER
-				+ ") Remove a member\n" + ADD_PRODUCT + ") Add a product\n" + CHECKOUT
-				+ ") Check out a member's items\n" + PROCESS_SHIPMENT + ") Process a shipment\n" + CHANGE_PRODUCT_PRICE
-				+ ") Change the price of a product\n" + PRODUCT_INFO + ") Retrieve product info\n" + MEMBER_INFO
-				+ ") Retrieve member info\n" + PRINT_TRANSACTIONS + ") Print transactions\n" + OUTSTANDING_ORDERS
-				+ ") List all outstanding orders\n" + LIST_MEMBERS + ") List all members with member info\n"
-				+ LIST_PRODUCTS + ") List all products with product info\n" + SAVE + ") Save\n" + HELP + ") Help \n"
+		String menu = "Make a selection, enter: \n" + ADD_MEMBER + ") Enroll a member\n"
+				+ REMOVE_MEMBER + ") Remove a member\n" + ADD_PRODUCT + ") Add a product\n"
+				+ CHECKOUT + ") Check out a member's items\n" + PROCESS_SHIPMENT
+				+ ") Process a shipment\n" + CHANGE_PRODUCT_PRICE
+				+ ") Change the price of a product\n" + PRODUCT_INFO + ") Retrieve product info\n"
+				+ MEMBER_INFO + ") Retrieve member info\n" + PRINT_TRANSACTIONS
+				+ ") Print transactions\n" + OUTSTANDING_ORDERS + ") List all outstanding orders\n"
+				+ LIST_MEMBERS + ") List all members with member info\n" + LIST_PRODUCTS
+				+ ") List all products with product info\n" + SAVE + ") Save\n" + HELP + ") Help \n"
 				+ "Press " + EXIT + " at any time to quit the application";
 		return menu;
 	}
@@ -125,7 +127,8 @@ public class UserInterface {
 				Integer userIntegerInput = Integer.valueOf(rawUserInput);
 				return userIntegerInput.intValue();
 			} catch (NumberFormatException nfe) {
-				System.out.println("Input must be a number 0 - 14\n" + "Enter " + HELP + " for help");
+				System.out
+						.println("Input must be a number 0 - 14\n" + "Enter " + HELP + " for help");
 			}
 		} while (true);
 	}
@@ -162,6 +165,14 @@ public class UserInterface {
 		} while (true);
 	}
 
+	private String formatCalendar(Calendar calendar) {
+		String output = "";
+		output += calendar.get(Calendar.MONTH) + "/";
+		output += calendar.get(Calendar.DAY_OF_MONTH) + "/";
+		output += calendar.get(Calendar.YEAR);
+		return output;
+	}
+
 	/**
 	 * Member Helpers
 	 */
@@ -175,16 +186,46 @@ public class UserInterface {
 		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
 			System.out.println("Could not add member to co-op");
 		} else {
-			System.out.println(result.getMemberName() + "'s id is " + result.getMemberAddress());
+			System.out.println(result.getMemberName() + "'s id is " + result.getMemberId());
+		}
+	}
+
+	public void removeMember() {
+		Request.instance().setMemberId(getStringInput("Enter ID of member to remove: "));
+		String memberId = Request.instance().getMemberId();
+		Result result = grocery.removeMemberByID(Request.instance());
+
+
+		if (result.getResultCode() == Result.NO_SUCH_MEMBER) {
+			System.out.println("Failed to remove member with ID " + memberId);
+			System.out.println("Member does not exist.");
+		}
+
+		if (result.getResultCode() == Result.OPERATION_COMPLETED) {
+			System.out.println("Removed Member with ID " + memberId);
+		}
+	}
+
+	public void printMembers() {
+		Iterator<Result> iterator = grocery.getMembers();
+
+		while (iterator.hasNext()) {
+			Result result = iterator.next();
+			System.out.println("Member ID: " + result.getMemberId());
+			System.out.println("Member Name: " + result.getMemberName());
+			System.out.println("Member Join Date: " + formatCalendar(result.getDateJoined()));
+			System.out.println("Member Address: " + result.getMemberAddress());
+			System.out.println("Member Phone Number: " + result.getMemberPhoneNumber());
+			System.out.println("Member Fee Paid: $" + result.getFeePaid());
 		}
 	}
 
 	public void getTransactions() {
 		Request.instance().setMemberId(getStringInput("Enter member id: "));
-		Request.instance()
-				.setStartDate(getDate("Enter the start date of period you want transactions in format mm/dd/yy: "));
-		Request.instance()
-				.setEndDate(getDate("Enter the end date of period you want transactions in format mm/dd/yy: "));
+		Request.instance().setStartDate(getDate(
+				"Enter the start date of period you want transactions in format mm/dd/yy: "));
+		Request.instance().setEndDate(
+				getDate("Enter the end date of period you want transactions in format mm/dd/yy: "));
 		Iterator<Transaction> result = grocery.getTransactions(Request.instance());
 		while (result.hasNext()) {
 			Transaction transaction = (Transaction) result.next();
@@ -192,35 +233,32 @@ public class UserInterface {
 		}
 		System.out.println("\n End of transactions \n");
 	}
-	
-//	needs further work 
-//	public void retrieveMembers() {
-//		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
-//		Iterator<Member> result = grocery.retreiveMembers(Request.instance());
-//		while (result.hasNext()) {
-//			Member member = result.next();
-//			System.out.println(member.output());
-//		}
-//	}
-	
+
+	public void findMemberByName() {
+		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
+		Iterator<Result> members = grocery.getProductsByName(Request.instance());
+		while (members.hasNext()) {
+			Result result = members.next();
+			System.out.println(result.getMemberId() + ": " + result.getMemberName());
+		}
+	}
+
 	/**
 	 * Product Helpers
 	 */
-	
-// needs further work 
-//	public void retrieveProducts() {
-//		Request.instance().setProductName(getStringInput("Enter beginning of product name: "));
-//		Iterator<Product> result = grocery.retreiveProducts(Request.instance());
-//		while (result.hasNext()) {
-//			Product product = result.next();
-//			System.out.println(product);
-//		}
-//		System.out.println("\n");
-//	}
+	public void retrieveProducts() {
+		Request.instance().setProductName(getStringInput("Enter beginning of product name: "));
+		Iterator<Result> results = grocery.getProductsByName(Request.instance());
+		while (results.hasNext()) {
+			Result result = results.next();
+			System.out.println(result.getProductId() + ": " + result.getProductName());
+		}
+		System.out.println("\n");
+	}
 
 	/**
-	 * This method catches user inputs, and relies on getIntegerInput and
-	 * getFirstWordInput to process inputs
+	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
+	 * process inputs
 	 * 
 	 * @param none
 	 * @return void
@@ -232,55 +270,56 @@ public class UserInterface {
 			try {
 				int userChoice = getIntegerInput("Enter: ");
 				switch (userChoice) {
-				case (EXIT):
-					System.out.println("Program Succesfully close");
-					System.exit(0);
-				case (ADD_MEMBER):
-					addMember();
-					// enroll a member
-					break;
-				case (REMOVE_MEMBER):
-					// remove a member
-					break;
-				case (ADD_PRODUCT):
-					// add a product
-					break;
-				case (CHECKOUT):
-					// check out a members products
-					break;
-				case (PROCESS_SHIPMENT):
-					// process a shipment
-					break;
-				case (CHANGE_PRODUCT_PRICE):
-					// change product price
-					break;
-				case (PRODUCT_INFO):
-					// retrieve prod info
-					break;
-				case (MEMBER_INFO):
-					// retrieve member info
-					break;
-				case (PRINT_TRANSACTIONS):
-					getTransactions();
-					// print transactions
-					break;
-				case (OUTSTANDING_ORDERS):
-					// list outstanding orders
-					break;
-				case (LIST_PRODUCTS):
-					// list member and member info
-					break;
-				case (LIST_MEMBERS):
-					// list prods and prod info
-					break;
-				case (SAVE):
-					// save
-					break;
-				case (HELP):
-					System.out.println(showMenu());
-					break;
-				default:
-					System.out.println("Invalid entry. Enter " + HELP + " for help");
+					case (EXIT):
+						System.out.println("Program Succesfully close");
+						System.exit(0);
+					case (ADD_MEMBER):
+						addMember();
+						// enroll a member
+						break;
+					case (REMOVE_MEMBER):
+						// remmove a member
+						removeMember();
+						break;
+					case (ADD_PRODUCT):
+						// add a product
+						break;
+					case (CHECKOUT):
+						// check out a members products
+						break;
+					case (PROCESS_SHIPMENT):
+						// process a shipment
+						break;
+					case (CHANGE_PRODUCT_PRICE):
+						// change product price
+						break;
+					case (PRODUCT_INFO):
+						break;
+					case (MEMBER_INFO):
+						// retrieve member info
+						break;
+					case (PRINT_TRANSACTIONS):
+						getTransactions();
+						// print transactions
+						break;
+					case (OUTSTANDING_ORDERS):
+						// list outstanding orders
+						break;
+					case (LIST_PRODUCTS):
+						// list member and member info
+						break;
+					case (LIST_MEMBERS):
+						// list prods and prod info
+						printMembers();
+						break;
+					case (SAVE):
+						// save
+						break;
+					case (HELP):
+						System.out.println(showMenu());
+						break;
+					default:
+						System.out.println("Invalid entry. Enter " + HELP + " for help");
 				}
 			} catch (Exception e) {
 				System.out.println("Unexpected Error. Restart Program.");
