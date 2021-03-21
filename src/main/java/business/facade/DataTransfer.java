@@ -6,10 +6,9 @@ import business.entities.Member;
 import business.entities.Product;
 
 /**
- * DataTransfer is a class that will carry out the transfer of data from the UI
- * and the GroceryStore class. It will store the instance variables of both
- * member and product. These fields can be supplied and sent in a request, or
- * used to return values in a result.
+ * DataTransfer is a class that will carry out the transfer of data from the UI and the GroceryStore
+ * class. It will store the instance variables of both member and product. These fields can be
+ * supplied and sent in a request, or used to return values in a result.
  * 
  * @author jordan dodd
  */
@@ -133,9 +132,8 @@ public abstract class DataTransfer {
 	}
 
 	/**
-	 * This class will set the product fields with the values from a passed in
-	 * product. It will leave the member fields in this DataTransfer =
-	 * DataTransfer.NONE_STRING
+	 * This class will set the product fields with the values from a passed in product. It will
+	 * leave the member fields in this DataTransfer = DataTransfer.NONE_STRING
 	 * 
 	 * @param product
 	 */
@@ -152,13 +150,14 @@ public abstract class DataTransfer {
 		this.memberName = member.getMemberName();
 		this.memberPhoneNumber = member.getMemberPhoneNumber();
 		this.memberAddress = member.getMemberAddress();
+		this.feePaid = member.getFeePaid();
+		this.dateJoined = member.getDateJoined();
 	}
 
 	/**
-	 * Reset sets all fields to a default value of NONE or constants NONE_INT and
-	 * NONE_DOUBLE. reset() does not return null values, so it is clear when a field
-	 * does not contain meaningful data. Constants are used as to not confuse a
-	 * sentinel value for an actual requested value.
+	 * Reset sets all fields to a default value of NONE or constants NONE_INT and NONE_DOUBLE.
+	 * reset() does not return null values, so it is clear when a field does not contain meaningful
+	 * data. Constants are used as to not confuse a sentinel value for an actual requested value.
 	 * 
 	 * @param
 	 * @return void
