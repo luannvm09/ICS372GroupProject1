@@ -75,7 +75,7 @@ public class Member implements Serializable {
 	 * @return the iterator to the collection
 	 */
 	public Iterator<Transaction> getTransactionsOnDate(Calendar startDate, Calendar endDate) {
-		return new FilteredIterator(transactions.iterator(),
+		return new FilteredIterator<Transaction>(transactions.iterator(),
 				transaction -> transaction.betweenDates(startDate, endDate));
 	}
 
