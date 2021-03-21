@@ -92,8 +92,8 @@ public class Grocery implements Serializable {
 
 		}
 
-		public ReadOnlyIterator<Product> safeIterator() {
-			return new ReadOnlyIterator<Product>(products);
+			return new FilteredIterator<Product>(iterator,
+					product -> product.getProductName().contains(name));
 		}
 
 		/**
@@ -160,10 +160,6 @@ public class Grocery implements Serializable {
 
 		}
 
-		public Iterator<Member> safeIterator() {
-			return new ReadOnlyIterator<Member>(this.members);
-		}
-
 		/**
 		 * String form of the collection
 		 * 
@@ -224,13 +220,16 @@ public class Grocery implements Serializable {
 	}
 
 	/**
-	 * gets an iterator of members whose name start with specified string
+	 * Returns a SafeIterator of results for members that have names that contain
+	 * request.getMemberName()
 	 * 
-	 * @param name the start of the member name you want
+	 * @param request the request object which contains specified member name
 	 * @return an iterator of members whose name start with specified string
 	 */
-	public Iterator<Member> retrieveMembers(Request request) {
-		return new ReadOnlyIterator<Member>(this.members.retrieveMembers(request.getMemberName()));
+	public Iterator<Result> retrieveMembersByName(Request request) {
+		Iterator<Member> filteredMembers = this.members.retrieveMembers(request.getMemberName());
+
+		return new SafeIterator<Member>(filteredMembers, SafeIterator.MEMBER);
 	}
 
 	/**
@@ -262,7 +261,9 @@ public class Grocery implements Serializable {
 	 * @param name the start of the product name you want
 	 * @return an iterator of products whose name start with specified string
 	 */
-	public ReadOnlyIterator<Product> getProductsByName(Request request) {
-		return this.stock.retrieveProducts(request.getProductName());
+	public Iterator<Result> getProductsByName(Request request) {
+		Iterator<Product> filteredProducts = this.stock.retrieveProducts(request.getProductName());
+
+		return new SafeIterator<Product>(filteredProducts, SafeIterator.PRODUCT);
 	}
 }
