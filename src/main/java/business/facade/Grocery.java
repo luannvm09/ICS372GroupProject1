@@ -1,14 +1,14 @@
 package business.facade;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import business.entities.Member;
 import business.entities.Product;
 import business.entities.Transaction;
-import business.entities.iterator.ReadOnlyIterator;
+import business.entities.iterator.FilteredIterator;
 import business.entities.iterator.SafeIterator;
 
 public class Grocery implements Serializable {
@@ -74,23 +74,13 @@ public class Grocery implements Serializable {
 		}
 
 		/**
-		 * gives you a list of products whose name starts with specified string
+		 * gives you a list of products whose name contains the specified string
 		 * 
 		 * @param name string of beginning of product name you want
 		 * @return a list with products whose name starts with name
 		 */
-		public List<Product> retrieveProducts(String name) {
-			List<Product> names = new LinkedList<Product>();
-			ReadOnlyIterator<Product> iterator = stock.safeIterator();
-			while (iterator.hasNext()) {
-				Product product = iterator.next();
-				if (product.getProductName().startsWith(name)) {
-					names.add(product);
-				}
-			}
-			return names;
-
-		}
+		public Iterator<Product> retrieveProducts(String name) {
+			Iterator<Product> iterator = this.products.iterator();
 
 			return new FilteredIterator<Product>(iterator,
 					product -> product.getProductName().contains(name));
@@ -137,6 +127,17 @@ public class Grocery implements Serializable {
 			return true;
 		}
 
+		public Member removeMember(String memberId) {
+			Member memberToRemove = search(memberId);
+
+			if (memberToRemove == null) {
+				return null;
+			}
+
+			this.members.remove(memberToRemove);
+			return memberToRemove;
+		}
+
 		public Iterator<Member> iterator() {
 			return members.iterator();
 		}
@@ -147,17 +148,10 @@ public class Grocery implements Serializable {
 		 * @param name string of beginning of member name you want
 		 * @return a list with members whose name starts with name
 		 */
-		public List<Member> retrieveMembers(String name) {
-			List<Member> names = new LinkedList<Member>();
-			Iterator<Member> iterator = members.iterator();
-			while (iterator.hasNext()) {
-				Member member = iterator.next();
-				if (member.getMemberName().startsWith(name)) {
-					names.add(member);
-				}
-			}
-			return names;
-
+		public Iterator<Member> retrieveMembers(String name) {
+			Iterator<Member> iterator = this.members.iterator();
+			return new FilteredIterator<Member>(iterator,
+					member -> member.getMemberName().contains(name));
 		}
 
 		/**
@@ -203,8 +197,12 @@ public class Grocery implements Serializable {
 	 */
 	public Result addMember(Request request) {
 		Result result = new Result();
-		Member member = new Member(request.getMemberName(), request.getMemberAddress(),
-				request.getMemberPhoneNumber(), request.getDateJoined(), request.getFeePaid());
+		String name = request.getMemberName();
+		String address = request.getMemberAddress();
+		String phoneNumber = request.getMemberPhoneNumber();
+		Calendar joinDate = request.getDateJoined();
+		double feePaid = request.getFeePaid();
+		Member member = new Member(name, address, phoneNumber, joinDate, feePaid);
 		if (members.insertMember(member)) {
 			result.setResultCode(Result.OPERATION_COMPLETED);
 			result.setMemberFields(member);
@@ -217,6 +215,23 @@ public class Grocery implements Serializable {
 
 	public Iterator<Result> getMembers() {
 		return new SafeIterator<Member>(members.iterator(), SafeIterator.MEMBER);
+	}
+
+
+	public Result removeMemberByID(Request request) {
+		Member removedMember = this.members.removeMember(request.getMemberId());
+
+		Result result = new Result();
+
+		// Member did not exist.
+		if (removedMember == null) {
+			result.setResultCode(Result.NO_SUCH_MEMBER);
+			return result;
+		}
+
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setMemberFields(removedMember);
+		return result;
 	}
 
 	/**
