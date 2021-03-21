@@ -206,6 +206,32 @@ public class UserInterface {
 		}
 	}
 
+	public void retrieveMemberInfo() {
+		Request.instance().setMemberName(getStringInput("Enter the beginning of Members name: "));
+
+		Iterator<Result> results = grocery.retrieveMembersByName(Request.instance());
+
+		if (!results.hasNext()) {
+			System.out.println("Unable to find any users that have a name starting with: '"
+					+ Request.instance().getMemberName() + "'");
+			return;
+		}
+
+		System.out.println("-- Members --");
+		while (results.hasNext()) {
+			Result result = results.next();
+
+			System.out.println("ID: " + result.getMemberId());
+			System.out.println("Name: " + result.getMemberName());
+			System.out.println("Address: " + result.getMemberAddress());
+			System.out.println("Phone Number: " + result.getMemberPhoneNumber());
+			System.out.println("Join Date: " + formatCalendar(result.getDateJoined()));
+			System.out.println("Fee Paid: " + result.getFeePaid());
+			// Add a new line
+			System.out.println();
+		}
+	}
+
 	public void printMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
 
@@ -236,7 +262,7 @@ public class UserInterface {
 
 	public void findMemberByName() {
 		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
-		Iterator<Result> members = grocery.getProductsByName(Request.instance());
+		Iterator<Result> members = grocery.retrieveMembersByName(Request.instance());
 		while (members.hasNext()) {
 			Result result = members.next();
 			System.out.println(result.getMemberId() + ": " + result.getMemberName());
@@ -297,6 +323,7 @@ public class UserInterface {
 						break;
 					case (MEMBER_INFO):
 						// retrieve member info
+						retrieveMemberInfo();
 						break;
 					case (PRINT_TRANSACTIONS):
 						getTransactions();
