@@ -9,6 +9,7 @@ import business.entities.Member;
 import business.entities.Product;
 import business.entities.Transaction;
 import business.entities.iterator.ReadOnlyIterator;
+import business.entities.iterator.SafeIterator;
 
 public class Grocery implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -71,26 +72,27 @@ public class Grocery implements Serializable {
 		public Iterator<Product> iterator() {
 			return products.iterator();
 		}
-		
+
 		/**
-		 * gives you  a list of products whose name starts with specified string
-		 * @param name  string of beginning of product name you want
-		 * @return  a list with products whose name starts with name
+		 * gives you a list of products whose name starts with specified string
+		 * 
+		 * @param name string of beginning of product name you want
+		 * @return a list with products whose name starts with name
 		 */
-		public List<Product> retrieveProducts(String name){
+		public List<Product> retrieveProducts(String name) {
 			List<Product> names = new LinkedList<Product>();
-			Iterator<Product> iterator = stock.iterator();
+			ReadOnlyIterator<Product> iterator = stock.safeIterator();
 			while (iterator.hasNext()) {
 				Product product = iterator.next();
-				if(product.getProductName().startsWith(name)) {
+				if (product.getProductName().startsWith(name)) {
 					names.add(product);
 				}
 			}
 			return names;
-			
+
 		}
 
-		public Iterator<Product> safeIterator() {
+		public ReadOnlyIterator<Product> safeIterator() {
 			return new ReadOnlyIterator<Product>(products);
 		}
 
@@ -138,23 +140,24 @@ public class Grocery implements Serializable {
 		public Iterator<Member> iterator() {
 			return members.iterator();
 		}
-		
+
 		/**
-		 * gives you  a list of members whose name starts with specified string
-		 * @param name  string of beginning of member name you want
-		 * @return  a list with members whose name starts with name
+		 * gives you a list of members whose name starts with specified string
+		 * 
+		 * @param name string of beginning of member name you want
+		 * @return a list with members whose name starts with name
 		 */
-		public List<Member> retrieveMembers(String name){
+		public List<Member> retrieveMembers(String name) {
 			List<Member> names = new LinkedList<Member>();
 			Iterator<Member> iterator = members.iterator();
 			while (iterator.hasNext()) {
 				Member member = iterator.next();
-				if(member.getMemberName().startsWith(name)) {
+				if (member.getMemberName().startsWith(name)) {
 					names.add(member);
 				}
 			}
 			return names;
-			
+
 		}
 
 		public Iterator<Member> safeIterator() {
@@ -172,8 +175,7 @@ public class Grocery implements Serializable {
 	}
 
 	/**
-	 * Private for the singleton pattern creates the stock and member collection
-	 * objects
+	 * Private for the singleton pattern creates the stock and member collection objects
 	 */
 	private Grocery() {
 
@@ -205,8 +207,8 @@ public class Grocery implements Serializable {
 	 */
 	public Result addMember(Request request) {
 		Result result = new Result();
-		Member member = new Member(request.getMemberName(), request.getMemberAddress(), request.getMemberPhoneNumber(),
-				request.getDateJoined(), request.getFeePaid());
+		Member member = new Member(request.getMemberName(), request.getMemberAddress(),
+				request.getMemberPhoneNumber(), request.getDateJoined(), request.getFeePaid());
 		if (members.insertMember(member)) {
 			result.setResultCode(Result.OPERATION_COMPLETED);
 			result.setMemberFields(member);
@@ -217,13 +219,14 @@ public class Grocery implements Serializable {
 		return result;
 	}
 
-	public Iterator<Member> getMembers() {
-		return this.members.safeIterator();
+	public Iterator<Result> getMembers() {
+		return new SafeIterator<Member>(members.iterator(), SafeIterator.MEMBER);
 	}
-	
+
 	/**
 	 * gets an iterator of members whose name start with specified string
-	 * @param name the start of the member name you want 
+	 * 
+	 * @param name the start of the member name you want
 	 * @return an iterator of members whose name start with specified string
 	 */
 	public Iterator<Member> retrieveMembers(Request request) {
@@ -236,8 +239,7 @@ public class Grocery implements Serializable {
 	 * @param memberId  memberId of member you want transactions of
 	 * @param startDate start date you want transactions from(inclusive)
 	 * @param endDate   end date of period you want transactions(inclusive)
-	 * @return iterator of transaction items of member requested if memberId and
-	 *         dates are valid
+	 * @return iterator of transaction items of member requested if memberId and dates are valid
 	 */
 	public Iterator<Transaction> getTransactions(Request request) {
 		Member member = members.search(request.getMemberId());
@@ -252,14 +254,15 @@ public class Grocery implements Serializable {
 	 * Product Functions
 	 * 
 	 */
-	
-	
+
+
 	/**
 	 * gets an iterator of products whose name start with specified string
-	 * @param name the start of the product name you want 
+	 * 
+	 * @param name the start of the product name you want
 	 * @return an iterator of products whose name start with specified string
 	 */
-	public Iterator<Product> retrieveProducts(Request request) {
-		return new ReadOnlyIterator<Product>(this.stock.retrieveProducts(request.getProductName()));
+	public ReadOnlyIterator<Product> getProductsByName(Request request) {
+		return this.stock.retrieveProducts(request.getProductName());
 	}
 }
