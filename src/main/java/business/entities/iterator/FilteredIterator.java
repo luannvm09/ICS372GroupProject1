@@ -12,6 +12,7 @@ public class FilteredIterator<T> implements Iterator<T> {
     public FilteredIterator(Iterator<T> iterator, Predicate<T> predicate) {
         this.iterator = iterator;
         this.predicate = predicate;
+        getNextItem();
     }
 
 
