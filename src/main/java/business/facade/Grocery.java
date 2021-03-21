@@ -143,15 +143,17 @@ public class Grocery implements Serializable {
 		}
 
 		/**
-		 * gives you a list of members whose name starts with specified string
+		 * gives you a list of members whose name starts with specified string (case insensitive)
 		 * 
 		 * @param name string of beginning of member name you want
 		 * @return a list with members whose name starts with name
 		 */
-		public Iterator<Member> retrieveMembers(String name) {
+		public Iterator<Member> retrieveMembersByName(String name) {
+			// Convert prefix to lower case to avoid case sensitivity issues.
+			String prefix = name.toLowerCase();
 			Iterator<Member> iterator = this.members.iterator();
 			return new FilteredIterator<Member>(iterator,
-					member -> member.getMemberName().contains(name));
+					member -> member.getMemberName().toLowerCase().startsWith(prefix));
 		}
 
 		/**
@@ -242,7 +244,8 @@ public class Grocery implements Serializable {
 	 * @return an iterator of members whose name start with specified string
 	 */
 	public Iterator<Result> retrieveMembersByName(Request request) {
-		Iterator<Member> filteredMembers = this.members.retrieveMembers(request.getMemberName());
+		Iterator<Member> filteredMembers =
+				this.members.retrieveMembersByName(request.getMemberName());
 
 		return new SafeIterator<Member>(filteredMembers, SafeIterator.MEMBER);
 	}
