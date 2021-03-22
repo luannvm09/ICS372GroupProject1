@@ -472,6 +472,25 @@ public class UserInterface {
 		System.out.println(
 				"Successfully completed transaction " + endTransactionResult.getTransactionId());
 	}
+	
+	/**
+	 * This method change the product price by the given product id
+	 */
+	private void changeProductPrice() {
+		Request instance = Request.instance();
+		instance.setProductId(getStringInput("Enter product's ID that its price will be changed: "));
+		
+		Result result = grocery.retrieveProductsById(instance);
+		
+		result.setCurrentPrice(getDoubleInput("Enter the new price : "));
+		
+		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("Change product price failed.");
+			return;
+		}
+
+		System.out.println("Succesfully change Product price with ID " + result.getProductId() + " and new price : " + result.getCurrentPrice());
+	}
 
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
@@ -511,6 +530,7 @@ public class UserInterface {
 						break;
 					case (CHANGE_PRODUCT_PRICE):
 						// change product price
+						changeProductPrice();
 						break;
 					case (PRODUCT_INFO):
 						break;

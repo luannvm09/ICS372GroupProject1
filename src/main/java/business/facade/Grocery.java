@@ -513,5 +513,24 @@ public class Grocery implements Serializable {
 		result.setTransactionFields(transaction);
 		return result;
 	}
+	
+	/**
+	 * Retrieve the product by product Id
+	 * 
+	 * @param request
+	 * @return result
+	 */
+	public Result retrieveProductsById(Request request) {
+		String productId = request.getProductId();
+		Product product = this.stock.search(productId);
+		Result result = new Result();
+		if (product == null) {
+			result.setResultCode(Result.PRODUCT_NOT_FOUND);
+			return result;
+		}
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setProductFields(product);
+		return result;
+	}
 
 }
