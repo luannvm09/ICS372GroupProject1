@@ -15,7 +15,53 @@ public class Grocery implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Stock stock = new Stock();
 	private MemberList members = new MemberList();
+	private OrderList orders = new OrderList();
 	private static Grocery grocery;
+
+	private class OrderList implements Iterable<Order>, Serializable {
+		private List<Order> orders = new LinkedList<Order>();
+
+		public Iterator<Order> getOrders() {
+			return this.orders.iterator();
+		}
+
+		/**
+		 * adds order to list of orders.
+		 * 
+		 * @param order order to add to the list
+		 * @return true what order added
+		 */
+		public boolean addOrder(Order order) {
+			return orders.add(order);
+		}
+
+		/**
+		 * Removes order of a specific product
+		 * 
+		 * @param productId id of product order to remove
+		 * @return the removed order item if it was removed, else null
+		 */
+		public Order removeOrder(String productId) {
+			Iterator<Order> matchedOrders = new FilteredIterator<Order>(this.orders.iterator(),
+					order -> order.getProduct().getProductId() == productId);
+
+			if (!matchedOrders.hasNext()) {
+				return null;
+			}
+
+			Order order = matchedOrders.next();
+			this.orders.remove(order);
+
+			return order;
+		}
+
+		@Override
+		public Iterator<Order> iterator() {
+			return this.orders.iterator();
+		}
+
+	}
+
 
 	private class Stock implements Iterable<Product>, Serializable {
 		private static final long serialVersionUID = 1L;
