@@ -1,10 +1,12 @@
 package business.facade;
 
 import java.util.Calendar;
-
+import java.util.LinkedList;
+import business.entities.LineItem;
 import business.entities.Member;
 import business.entities.Order;
 import business.entities.Product;
+import business.entities.Transaction;
 
 /**
  * DataTransfer is a class that will carry out the transfer of data from the UI and the GroceryStore
@@ -22,6 +24,7 @@ public abstract class DataTransfer {
 	private final static int NONE_DAY = 1;
 	private final static Product NONE_PRODUCT =
 			new Product(NONE_STRING, NONE_STRING, NONE_INT, NONE_INT, NONE_DOUBLE);
+	private final static LinkedList<LineItem> NONE_LINE_ITEMS = new LinkedList<>();
 	// Member fields
 	private String memberId;
 	private String memberName;
@@ -40,6 +43,14 @@ public abstract class DataTransfer {
 	private Product orderProduct;
 	private int orderQuantity;
 	private Calendar orderDate;
+	// Transaction fields
+	private String transactionId;
+	private Calendar transactionDate;
+	private LinkedList<LineItem> lineItems;
+	// Checkout fields
+	private int checkoutQuantity;
+	private double checkoutTotal;
+	private double lineTotal;
 
 	/**
 	 * constructor sets all fields to none
@@ -171,6 +182,54 @@ public abstract class DataTransfer {
 		this.orderDate = orderDate;
 	}
 
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	public Calendar getTransactionDate() {
+		return transactionDate;
+	}
+
+	public void setTransactionDate(Calendar transactionDate) {
+		this.transactionDate = transactionDate;
+	}
+
+	public LinkedList<LineItem> getLineItems() {
+		return lineItems;
+	}
+
+	public void setLineItems(LinkedList<LineItem> lineItems) {
+		this.lineItems = lineItems;
+	}
+
+	public int getCheckoutQuantity() {
+		return this.checkoutQuantity;
+	}
+
+	public void setCheckoutQuantity(int checkoutQuantity) {
+		this.checkoutQuantity = checkoutQuantity;
+	}
+
+	public double getCheckoutTotal() {
+		return this.checkoutTotal;
+	}
+
+	public void setCheckoutTotal(double checkoutTotal) {
+		this.checkoutTotal = checkoutTotal;
+	}
+
+	public double getLineTotal() {
+		return this.lineTotal;
+	}
+
+	public void setLineTotal(double lineTotal) {
+		this.lineTotal = lineTotal;
+	}
+
 	/**
 	 * This class will set the product fields with the values from a passed in product. It will
 	 * leave the member fields in this DataTransfer = DataTransfer.NONE_STRING
@@ -199,6 +258,13 @@ public abstract class DataTransfer {
 		this.orderProduct = order.getProduct();
 		this.orderQuantity = order.getQuantity();
 		this.orderDate = order.getDate();
+	}
+
+	public void setTransactionFields(Transaction transaction) {
+		this.transactionId = transaction.getTransactionId();
+		this.transactionDate = transaction.getDate();
+		this.lineItems = transaction.getLineItems();
+		this.checkoutTotal = transaction.getTotalCost();
 	}
 
 	/**
@@ -230,6 +296,14 @@ public abstract class DataTransfer {
 		orderProduct = NONE_PRODUCT;
 		orderQuantity = NONE_INT;
 		orderDate = noneCalendar;
+		// transaction fields
+		transactionId = NONE_STRING;
+		transactionDate = noneCalendar;
+		lineItems = NONE_LINE_ITEMS;
+		// checkout fields
+		checkoutQuantity = NONE_INT;
+		checkoutTotal = NONE_DOUBLE;
+		lineTotal = NONE_DOUBLE;
 	}
 
 }
