@@ -20,6 +20,7 @@ public class Grocery implements Serializable {
 	private static Grocery grocery;
 
 	private class OrderList implements Iterable<Order>, Serializable {
+		private static final long serialVersionUID = 1L;
 		private List<Order> orders = new LinkedList<Order>();
 
 		public Iterator<Order> getOrders() {
@@ -39,12 +40,12 @@ public class Grocery implements Serializable {
 		/**
 		 * Removes order of a specific product
 		 * 
-		 * @param productId id of product order to remove
+		 * @param orderId id of order to be removed
 		 * @return the removed order item if it was removed, else null
 		 */
-		public Order removeOrder(String productId) {
+		public Order removeOrder(String orderId) {
 			Iterator<Order> matchedOrders = new FilteredIterator<Order>(this.orders.iterator(),
-					order -> order.getProduct().getProductId() == productId);
+					order -> order.getOrderId() == orderId);
 
 			if (!matchedOrders.hasNext()) {
 				return null;
@@ -54,6 +55,23 @@ public class Grocery implements Serializable {
 			this.orders.remove(order);
 
 			return order;
+		}
+		
+		/**
+		 * Checks whether an order with a given order id exists.
+		 * 
+		 * @param orderId the id of the order
+		 * @return true iff the order exists
+		 * 
+		 */
+		public Order search(String orderId) {
+			for (Iterator<Order> iterator = orders.iterator(); iterator.hasNext();) {
+				Order order = (Order) iterator.next();
+				if (order.getOrderId().equals(orderId)) {
+					return order;
+				}
+			}
+			return null;
 		}
 
 		@Override
@@ -71,7 +89,7 @@ public class Grocery implements Serializable {
 		 * Checks whether a product with a given product id exists.
 		 * 
 		 * @param productId the id of the product
-		 * @return true iff the book exists
+		 * @return true iff the product exists
 		 * 
 		 */
 		public Product search(String productId) {
