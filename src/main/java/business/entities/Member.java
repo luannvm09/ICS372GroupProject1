@@ -19,16 +19,10 @@ public class Member implements Serializable {
 	private String memberPhoneNumber;
 	private double feePaid;
 	private Calendar dateJoined;
+	private List<Transaction> transactions = new LinkedList<Transaction>();
 
 	private static final String MEMBER_STRING = "M";
 	private static int idCounter;
-
-	/**
-	 * Idea is creating the productPurchased List to store all of product in the certain time. If
-	 * the customer want to return, the returned products should be in this list.
-	 */
-	private List<Product> productPurchased = new LinkedList<Product>();
-	private List<Transaction> transactions = new LinkedList<Transaction>();
 
 	public Member(String memberName, String memberAddress, String memberPhoneNumber,
 			Calendar dateJoined, double feePaid) {
@@ -40,31 +34,9 @@ public class Member implements Serializable {
 		this.feePaid = feePaid;
 	}
 
-	// FIXME
-	// I am not sure these lines of code. I want to save the purchased products on
-	// the list
-	// then if the members return products, we will mark on transaction "return"
-	/**
-	 * Stores the product is purchased to the member
-	 * 
-	 * @param product the product to be purchased
-	 * @return true if the product could be marked as issued. always true currently
-	 */
-	/*
-	 * public boolean purchase(Product product) { if (productPurchased.add(product)) {
-	 * transactions.add(new Transaction("Purchased", product.getProductName())); return true; }
-	 * return false; }
-	 * 
-	 *//**
-		 * Marks the product as not issued to the member
-		 * 
-		 * @param product the product to be returned
-		 * @return true if the product could be marked as marked as returned
-		 *//*
-			 * public boolean returnProduct(Product product) { if (productPurchased.remove(product))
-			 * { transactions.add(new Transaction("Returned", product.getProductName())); return
-			 * true; } return false; }
-			 */
+	public boolean addNewUserTransaction(Transaction transaction) {
+		return this.transactions.add(transaction);
+	}
 
 	/**
 	 * Gets an iterator to a collection of selected transactions
