@@ -3,6 +3,7 @@ package business.facade;
 import java.util.Calendar;
 
 import business.entities.Member;
+import business.entities.Order;
 import business.entities.Product;
 
 /**
@@ -19,6 +20,8 @@ public abstract class DataTransfer {
 	private final static int NONE_YEAR = 1900;
 	private final static int NONE_MONTH = 1;
 	private final static int NONE_DAY = 1;
+	private final static Product NONE_PRODUCT =
+			new Product(NONE_STRING, NONE_STRING, NONE_INT, NONE_INT, NONE_DOUBLE);
 	// Member fields
 	private String memberId;
 	private String memberName;
@@ -32,6 +35,11 @@ public abstract class DataTransfer {
 	private double currentPrice;
 	private int stockOnHand;
 	private int reorderLevel;
+	// Order fields
+	private String orderId;
+	private Product orderProduct;
+	private int orderQuantity;
+	private Calendar orderDate;
 
 	/**
 	 * constructor sets all fields to none
@@ -131,6 +139,38 @@ public abstract class DataTransfer {
 		this.reorderLevel = reorderLevel;
 	}
 
+	public String getOrderId() {
+		return this.orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public Product getOrderProduct() {
+		return this.orderProduct;
+	}
+
+	public void setOrderProduct(Product orderProduct) {
+		this.orderProduct = orderProduct;
+	}
+
+	public int getOrderQuantity() {
+		return this.orderQuantity;
+	}
+
+	public void setOrderQuantity(int orderQuantity) {
+		this.orderQuantity = orderQuantity;
+	}
+
+	public Calendar getOrderDate() {
+		return this.orderDate;
+	}
+
+	public void setOrderDate(Calendar orderDate) {
+		this.orderDate = orderDate;
+	}
+
 	/**
 	 * This class will set the product fields with the values from a passed in product. It will
 	 * leave the member fields in this DataTransfer = DataTransfer.NONE_STRING
@@ -152,6 +192,13 @@ public abstract class DataTransfer {
 		this.memberAddress = member.getMemberAddress();
 		this.feePaid = member.getFeePaid();
 		this.dateJoined = member.getDateJoined();
+	}
+
+	public void setOrderFields(Order order) {
+		this.orderId = order.getOrderId();
+		this.orderProduct = order.getProduct();
+		this.orderQuantity = order.getQuantity();
+		this.orderDate = order.getDate();
 	}
 
 	/**
@@ -178,6 +225,11 @@ public abstract class DataTransfer {
 		stockOnHand = DataTransfer.NONE_INT;
 		currentPrice = DataTransfer.NONE_DOUBLE;
 		reorderLevel = DataTransfer.NONE_INT;
+		// order fields
+		orderId = NONE_STRING;
+		orderProduct = NONE_PRODUCT;
+		orderQuantity = NONE_INT;
+		orderDate = noneCalendar;
 	}
 
 }
