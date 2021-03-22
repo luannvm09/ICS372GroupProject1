@@ -328,6 +328,26 @@ public class UserInterface {
 		System.out.println("Succesfully created Product with ID " + instance.getProductId());
 	}
 
+	public void printProducts() {
+		Iterator<Result> results = grocery.retrieveProducts();
+
+		if (!results.hasNext()) {
+			System.out.println("There are currently no products.");
+		}
+
+		System.out.println("--Products--\n");
+		while (results.hasNext()) {
+			Result result = results.next();
+			System.out.println("ID: " + result.getProductId());
+			System.out.println("Name: " + result.getProductName());
+			System.out.println("In Stock: " + result.getStockOnHand());
+			System.out.println("Current Price: " + result.getCurrentPrice());
+			System.out.println("Reorder Level: " + result.getReorderLevel());
+			// Print new line to help readability
+			System.out.println();
+		}
+	}
+
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
 	 * process inputs
@@ -382,6 +402,7 @@ public class UserInterface {
 						break;
 					case (LIST_PRODUCTS):
 						// list member and member info
+						printProducts();
 						break;
 					case (LIST_MEMBERS):
 						// list prods and prod info

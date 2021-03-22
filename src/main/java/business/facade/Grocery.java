@@ -63,7 +63,6 @@ public class Grocery implements Serializable {
 
 	}
 
-
 	private class Stock implements Iterable<Product>, Serializable {
 		private static final long serialVersionUID = 1L;
 		private List<Product> products = new LinkedList<Product>();
@@ -314,9 +313,13 @@ public class Grocery implements Serializable {
 	}
 
 	/**
-	 * 
 	 * Product Functions
+	 */
+
+	/**
 	 * 
+	 * @param instance request DTO
+	 * @return
 	 */
 	public Result addProduct(Request instance) {
 		String productName = instance.getProductName();
@@ -342,6 +345,11 @@ public class Grocery implements Serializable {
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		result.setProductFields(newProduct);
 		return result;
+	}
+
+	public Iterator<Result> retrieveProducts() {
+		Iterator<Product> iterator = this.stock.iterator();
+		return new SafeIterator<Product>(iterator, SafeIterator.PRODUCT);
 	}
 
 	/**
