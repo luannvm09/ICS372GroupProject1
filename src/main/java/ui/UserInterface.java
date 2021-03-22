@@ -8,9 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-
-import business.entities.Transaction;
-import business.entities.iterator.SafeIterator;
+import java.util.List;
+import business.entities.LineItem;
 import business.facade.Grocery;
 import business.facade.Request;
 import business.facade.Result;
@@ -146,6 +145,19 @@ public class UserInterface {
 		} while (true);
 	}
 
+	private boolean getYesOrNoInput(String message) {
+		do {
+			String input = getStringInput(message).toLowerCase();
+			if (input.equals("yes") || input.equals("y")) {
+				return true;
+			} else if (input.equals("no") || input.equals("n")) {
+				return false;
+			} else {
+				System.out.println("Answer must be 'yes' or 'no'. Try again.");
+			}
+		} while (true);
+	}
+
 	/**
 	 * method to get a date from user
 	 * 
@@ -247,18 +259,51 @@ public class UserInterface {
 		}
 	}
 
-	public void getTransactions() {
+	/**
+	 * Helper functions for pretty-printing the line items of a Transaction
+	 * 
+	 * @param lineItems
+	 */
+	public void printTransactionLineItems(List<LineItem> lineItems) {
+		System.out.println(lineItems.size() + " line items.");
+		Iterator<LineItem> iterator = lineItems.iterator();
+		while (iterator.hasNext()) {
+			LineItem lineItem = iterator.next();
+			String productName = lineItem.getProduct().getProductName();
+			double productPrice = lineItem.getProduct().getCurrentPrice();
+			int quantity = lineItem.getQuantity();
+			String output = " - ";
+			output += "id " + lineItem.getProduct().getProductId();
+			output += ": " + productName;
+			output += " @$" + productPrice;
+			output += " Qty: " + quantity;
+			output += " Line: $" + (quantity * productPrice);
+			System.out.println(output);
+		}
+
+	}
+
+	public void getMembersTransactions() {
 		Request.instance().setMemberId(getStringInput("Enter member id: "));
 		Request.instance().setStartDate(getDate(
 				"Enter the start date of period you want transactions in format mm/dd/yy: "));
 		Request.instance().setEndDate(
 				getDate("Enter the end date of period you want transactions in format mm/dd/yy: "));
-		Iterator<Transaction> result = grocery.getTransactions(Request.instance());
-		while (result.hasNext()) {
-			Transaction transaction = (Transaction) result.next();
-			System.out.println(transaction.getType() + "   " + transaction.getName() + "\n");
+		Iterator<Result> results = grocery.getMembersTransactions(Request.instance());
+
+		if (!results.hasNext()) {
+			System.out.println("No found transactions between specified dates.");
 		}
-		System.out.println("\n End of transactions \n");
+
+		System.out.println("--Transactions--\n");
+		while (results.hasNext()) {
+			Result result = results.next();
+			System.out.println("ID: " + result.getTransactionId());
+			System.out.println("Date: " + formatCalendar(result.getTransactionDate()));
+			printTransactionLineItems(result.getLineItems());
+			System.out.println("Total Transaction Cost: $" + result.getCheckoutTotal() + "\n");
+		}
+		System.out.println("--End of transactions--\n");
 	}
 
 	public void findMemberByName() {
@@ -349,6 +394,86 @@ public class UserInterface {
 	}
 
 	/**
+	 * Transaction Helpers
+	 */
+
+	private Request getCheckoutItemRequest() {
+		Request instance = Request.instance();
+
+		instance.setProductId(getStringInput("Enter product ID: "));
+		instance.setCheckoutQuantity(getIntegerInput("Enter quantity: "));
+
+		return instance;
+	}
+
+	private void checkout() {
+		/**
+		 * Before starting transaction, ensure that the user's id is valid.
+		 */
+		String memberId = getStringInput("Enter member's ID: ");
+		Request.instance().setMemberId(memberId);
+		Result searchResults = grocery.retrieveMemberById(Request.instance());
+		if (searchResults.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("There is no member with ID " + memberId);
+			return;
+		}
+		/**
+		 * Inform grocery to begin a transaction. Result will contain the transaction id
+		 */
+		Result beginTransactionResult = grocery.beginTransaction();
+		if (beginTransactionResult.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("Unable to begin new transactions.");
+			return;
+		}
+		String transactionId = beginTransactionResult.getTransactionId();
+		/**
+		 * Continue accepting checkout items until the user enters no
+		 */
+		boolean moreItems = true;
+		while (moreItems) {
+			Request checkoutItemRequest = getCheckoutItemRequest();
+			checkoutItemRequest.setTransactionId(transactionId);
+			Result lineItemResult = grocery.addTransactionLineItem(checkoutItemRequest);
+
+			if (lineItemResult.getResultCode() == Result.TRANSACTION_NOT_FOUND) {
+				System.out.println("There is no valid transaction with ID " + transactionId);
+			}
+
+			if (lineItemResult.getResultCode() == Result.PRODUCT_NOT_FOUND) {
+				System.out.println(
+						"There is no valid product with ID " + checkoutItemRequest.getProductId());
+			}
+
+			System.out.println("Line Total: $" + lineItemResult.getLineTotal());
+			System.out.println("Total Cost: $" + lineItemResult.getCheckoutTotal());
+
+			boolean shouldContinue = getYesOrNoInput("Add more items for checkout? (yes/no): ");
+			if (!shouldContinue) {
+				moreItems = false;
+			}
+		}
+
+		/**
+		 * Inform grocery to end the transaction with request object. Request object should contain
+		 * transaction id and member id. endTransaction() will add the transaction to the member's
+		 * transaction LinkedList
+		 **/
+		Request instance = Request.instance();
+		instance.setMemberId(memberId);
+		instance.setTransactionId(transactionId);
+		Result endTransactionResult = grocery.endTransaction(instance);
+
+		if (endTransactionResult.getResultCode() == Result.NO_SUCH_MEMBER) {
+			System.out.println("Failed to finalize transaction because member with ID " + memberId
+					+ " was not found.");
+			return;
+		}
+
+		System.out.println(
+				"Successfully completed transaction " + endTransactionResult.getTransactionId());
+	}
+
+	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
 	 * process inputs
 	 * 
@@ -379,6 +504,7 @@ public class UserInterface {
 						break;
 					case (CHECKOUT):
 						// check out a members products
+						checkout();
 						break;
 					case (PROCESS_SHIPMENT):
 						// process a shipment
@@ -393,7 +519,7 @@ public class UserInterface {
 						retrieveMemberInfo();
 						break;
 					case (PRINT_TRANSACTIONS):
-						getTransactions();
+						getMembersTransactions();
 						// print transactions
 						break;
 					case (OUTSTANDING_ORDERS):

@@ -17,7 +17,42 @@ public class Grocery implements Serializable {
 	private Stock stock = new Stock();
 	private MemberList members = new MemberList();
 	private OrderList orders = new OrderList();
+	private TransactionList transactions = new TransactionList();
 	private static Grocery grocery;
+
+	private class TransactionList implements Iterable<Transaction>, Serializable {
+		private static final long serialVersionUID = 1L;
+
+		private List<Transaction> transactions = new LinkedList<Transaction>();
+
+		public boolean insertTransaction(Transaction transaction) {
+			return this.transactions.add(transaction);
+		}
+
+		public Transaction getTransactionById(String id) {
+			Iterator<Transaction> iterator = this.transactions.iterator();
+
+			if (!iterator.hasNext()) {
+				return null;
+			}
+
+			while (iterator.hasNext()) {
+				Transaction transaction = iterator.next();
+
+				if (transaction.getTransactionId().equals(id)) {
+					return transaction;
+				}
+			}
+
+			return null;
+		}
+
+		@Override
+		public Iterator<Transaction> iterator() {
+			return this.transactions.iterator();
+		}
+
+	}
 
 	private class OrderList implements Iterable<Order>, Serializable {
 		private List<Order> orders = new LinkedList<Order>();
@@ -76,8 +111,8 @@ public class Grocery implements Serializable {
 		 */
 		public Product search(String productId) {
 			for (Iterator<Product> iterator = products.iterator(); iterator.hasNext();) {
-				Product product = (Product) iterator.next();
-				if (product.getProductId().equals(productId)) {
+				Product product = iterator.next();
+				if (product.getProductId().toLowerCase().equals(productId)) {
 					return product;
 				}
 			}
@@ -149,7 +184,7 @@ public class Grocery implements Serializable {
 		 * Checks whether a member with a given member id exists.
 		 * 
 		 * @param memberId the id of the member
-		 * @return true iff member exists
+		 * @return Member iff member exists. Otherwise null.
 		 * 
 		 */
 		public Member search(String memberId) {
@@ -296,6 +331,19 @@ public class Grocery implements Serializable {
 		return new SafeIterator<Member>(filteredMembers, SafeIterator.MEMBER);
 	}
 
+	public Result retrieveMemberById(Request request) {
+		String memberId = request.getMemberId();
+		Member member = this.members.search(memberId);
+		Result result = new Result();
+		if (member == null) {
+			result.setResultCode(Result.NO_SUCH_MEMBER);
+			return result;
+		}
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setMemberFields(member);
+		return result;
+	}
+
 	/**
 	 * Gets transactions of a member
 	 * 
@@ -304,12 +352,16 @@ public class Grocery implements Serializable {
 	 * @param endDate   end date of period you want transactions(inclusive)
 	 * @return iterator of transaction items of member requested if memberId and dates are valid
 	 */
-	public Iterator<Transaction> getTransactions(Request request) {
+	public Iterator<Result> getMembersTransactions(Request request) {
 		Member member = members.search(request.getMemberId());
 		if (member == null || request.getStartDate().after(request.getEndDate())) {
-			return new LinkedList<Transaction>().iterator();
+			// Return an empty iterator
+			Iterator<Transaction> emptyIterator = (new LinkedList<Transaction>()).iterator();
+			return new SafeIterator<Transaction>(emptyIterator, SafeIterator.TRANSACTION);
 		}
-		return member.getTransactionsOnDate(request.getStartDate(), request.getEndDate());
+		Iterator<Transaction> membersTransactions =
+				member.getTransactionsOnDate(request.getStartDate(), request.getEndDate());
+		return new SafeIterator<Transaction>(membersTransactions, SafeIterator.TRANSACTION);
 	}
 
 	/**
@@ -353,6 +405,18 @@ public class Grocery implements Serializable {
 	}
 
 	/**
+	 * gets an iterator of products whose name start with specified string
+	 * 
+	 * @param name the start of the product name you want
+	 * @return an iterator of products whose name start with specified string
+	 */
+	public Iterator<Result> getProductsByName(Request request) {
+		Iterator<Product> filteredProducts = this.stock.retrieveProducts(request.getProductName());
+
+		return new SafeIterator<Product>(filteredProducts, SafeIterator.PRODUCT);
+	}
+
+	/**
 	 * Order Helpers
 	 */
 
@@ -367,15 +431,69 @@ public class Grocery implements Serializable {
 	}
 
 	/**
-	 * gets an iterator of products whose name start with specified string
-	 * 
-	 * @param name the start of the product name you want
-	 * @return an iterator of products whose name start with specified string
+	 * Transaction Helpers
 	 */
-	public Iterator<Result> getProductsByName(Request request) {
-		Iterator<Product> filteredProducts = this.stock.retrieveProducts(request.getProductName());
+	public Result addTransactionLineItem(Request request) {
+		Result result = new Result();
 
-		return new SafeIterator<Product>(filteredProducts, SafeIterator.PRODUCT);
+		String transactionId = request.getTransactionId();
+		String productId = request.getProductId();
+		int checkoutQuantity = request.getCheckoutQuantity();
+		Transaction currentTransaction = this.transactions.getTransactionById(transactionId);
+		Product currentProduct = this.stock.search(productId);
+		double lineTotal = currentProduct.getCurrentPrice() * checkoutQuantity;
+
+		if (currentTransaction == null) {
+			result.setResultCode(Result.TRANSACTION_NOT_FOUND);
+			return result;
+		}
+
+		if (currentProduct == null) {
+			result.setResultCode(Result.PRODUCT_NOT_FOUND);
+			return result;
+		}
+
+		currentTransaction.addLineItem(currentProduct, checkoutQuantity);
+		double checkoutCost = currentTransaction.getTotalCost();
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setLineTotal(lineTotal);
+		result.setCheckoutTotal(checkoutCost);
+		return result;
+	}
+
+	/**
+	 * Creates a new transaction and returns the id of the new transaction to caller.
+	 * 
+	 * @return
+	 */
+	public Result beginTransaction() {
+		Transaction createdTransaction = new Transaction();
+		this.transactions.insertTransaction(createdTransaction);
+
+		Result result = new Result();
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setTransactionId(createdTransaction.getTransactionId());
+		return result;
+	}
+
+	public Result endTransaction(Request request) {
+		Result result = new Result();
+
+		String transactionId = request.getTransactionId();
+		Transaction transaction = this.transactions.getTransactionById(transactionId);
+
+		String memberId = request.getMemberId();
+		Member member = this.members.search(memberId);
+
+		if (member == null) {
+			result.setResultCode(Result.NO_SUCH_MEMBER);
+			return result;
+		}
+
+		member.addNewUserTransaction(transaction);
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setTransactionFields(transaction);
+		return result;
 	}
 
 }
