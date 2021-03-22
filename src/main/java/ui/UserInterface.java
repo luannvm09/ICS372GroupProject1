@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import business.entities.Transaction;
+import business.entities.iterator.SafeIterator;
 import business.facade.Grocery;
 import business.facade.Request;
 import business.facade.Result;
@@ -283,6 +284,51 @@ public class UserInterface {
 	}
 
 	/**
+	 * Order Helpers
+	 */
+	private void listOutstandingOrders() {
+		Iterator<Result> orders = grocery.getOutstandingOrders();
+
+		if (!orders.hasNext()) {
+			System.out.println("There are no current outstanding orders.");
+			return;
+		}
+
+		System.out.println("--Orders--\n");
+		while (orders.hasNext()) {
+			Result result = orders.next();
+			System.out.println("ID: " + result.getOrderId());
+			System.out.println("Product Name: " + result.getOrderProduct().getProductName());
+			System.out.println("Order Date: " + formatCalendar(result.getOrderDate()));
+			System.out.println("Quantity: " + result.getOrderQuantity());
+			// Print a new line for ease of reading
+			System.out.println();
+		}
+	}
+
+	/**
+	 * Prompts user to create a new product. Then, calls addProduct from grocery. Grocery
+	 * addProduct() creates an initial order for double the reorder quantity.
+	 */
+	public void addProduct() {
+		Request instance = Request.instance();
+		instance.setProductId(getStringInput("Enter new product's ID: "));
+		instance.setProductName(getStringInput("Enter new product's name: "));
+		instance.setStockOnHand(getIntegerInput("Enter new product's current stock: "));
+		instance.setCurrentPrice(getDoubleInput("Enter new product's current price: "));
+		instance.setReorderLevel(getIntegerInput("Enter new product's reorder quantity: "));
+
+		Result result = grocery.addProduct(instance);
+
+		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("Product creation failed.");
+			return;
+		}
+
+		System.out.println("Succesfully created Product with ID " + instance.getProductId());
+	}
+
+	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
 	 * process inputs
 	 * 
@@ -294,7 +340,7 @@ public class UserInterface {
 		boolean continueApplication = true;
 		while (continueApplication) {
 			try {
-				int userChoice = getIntegerInput("Enter: ");
+				int userChoice = getIntegerInput("\nEnter a command (14 for help): ");
 				switch (userChoice) {
 					case (EXIT):
 						System.out.println("Program Succesfully close");
@@ -309,6 +355,7 @@ public class UserInterface {
 						break;
 					case (ADD_PRODUCT):
 						// add a product
+						addProduct();
 						break;
 					case (CHECKOUT):
 						// check out a members products
@@ -331,6 +378,7 @@ public class UserInterface {
 						break;
 					case (OUTSTANDING_ORDERS):
 						// list outstanding orders
+						listOutstandingOrders();
 						break;
 					case (LIST_PRODUCTS):
 						// list member and member info

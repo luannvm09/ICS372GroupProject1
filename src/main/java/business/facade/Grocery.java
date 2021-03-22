@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import business.entities.Member;
+import business.entities.Order;
 import business.entities.Product;
 import business.entities.Transaction;
 import business.entities.iterator.FilteredIterator;
@@ -317,7 +318,45 @@ public class Grocery implements Serializable {
 	 * Product Functions
 	 * 
 	 */
+	public Result addProduct(Request instance) {
+		String productName = instance.getProductName();
+		String productId = instance.getProductId();
+		int productStock = instance.getStockOnHand();
+		int reorderQuantity = instance.getReorderLevel();
+		double productPrice = instance.getCurrentPrice();
+		Product newProduct =
+				new Product(productName, productId, reorderQuantity, productStock, productPrice);
+		this.stock.addProduct(newProduct);
 
+		// Immediately create order for double of the reorder quantity
+		int orderQuantity = reorderQuantity * 2;
+		Order initialOrder = new Order(newProduct, orderQuantity, Calendar.getInstance());
+		boolean success = this.orders.addOrder(initialOrder);
+
+		Result result = new Result();
+		if (!success) {
+			result.setResultCode(Result.OPERATION_FAILED);
+			return result;
+		}
+
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setProductFields(newProduct);
+		return result;
+	}
+
+	/**
+	 * Order Helpers
+	 */
+
+	/**
+	 * @param request
+	 * @return
+	 */
+	public Iterator<Result> getOutstandingOrders() {
+		Iterator<Order> iterator = this.orders.getOrders();
+
+		return new SafeIterator<Order>(iterator, SafeIterator.ORDER);
+	}
 
 	/**
 	 * gets an iterator of products whose name start with specified string
@@ -330,4 +369,5 @@ public class Grocery implements Serializable {
 
 		return new SafeIterator<Product>(filteredProducts, SafeIterator.PRODUCT);
 	}
+
 }
