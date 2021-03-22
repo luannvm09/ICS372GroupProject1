@@ -68,6 +68,14 @@ public class Product implements Serializable {
 		this.currentPrice = currentPrice;
 		System.out.println("Product: " + productName + "\tNew Price: " + currentPrice);
 	}
+	
+	/**
+	 * returns string representation of product object
+	 */
+	@Override
+    public String toString() {
+        return "Product name " + this.productName + "; id " + this.productId  + "; stock on hand " + this.stockOnHand+ "; price $ " + this.currentPrice+ "; reorder level " + this.reorderLevel;
+    }
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the
