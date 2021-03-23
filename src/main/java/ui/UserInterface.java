@@ -264,7 +264,7 @@ public class UserInterface {
 	 * 
 	 * @param lineItems
 	 */
-	public void printTransactionLineItems(List<LineItem> lineItems) {
+	private void printTransactionLineItems(List<LineItem> lineItems) {
 		System.out.println(lineItems.size() + " line items.");
 		Iterator<LineItem> iterator = lineItems.iterator();
 		while (iterator.hasNext()) {
@@ -284,17 +284,26 @@ public class UserInterface {
 	}
 
 	public void getMembersTransactions() {
-		Request.instance().setMemberId(getStringInput("Enter member id: "));
+		String memberId = getStringInput("Enter member id: ");
+		// Check and make sure member even exists first.
+		Request.instance().setMemberId(memberId);
+		Result checkMemberIdResult = grocery.retrieveMemberById(Request.instance());
+		if (checkMemberIdResult.getResultCode() == Result.NO_SUCH_MEMBER) {
+			System.out.println("Member with ID " + memberId + " does not exist.");
+			return;
+		}
+		// Get date range
 		Request.instance().setStartDate(getDate(
 				"Enter the start date of period you want transactions in format mm/dd/yy: "));
 		Request.instance().setEndDate(
 				getDate("Enter the end date of period you want transactions in format mm/dd/yy: "));
 		Iterator<Result> results = grocery.getMembersTransactions(Request.instance());
-
+		// No transactions found
 		if (!results.hasNext()) {
 			System.out.println("No found transactions between specified dates.");
+			return;
 		}
-
+		// Print the queried transactions
 		System.out.println("--Transactions--\n");
 		while (results.hasNext()) {
 			Result result = results.next();
@@ -472,24 +481,26 @@ public class UserInterface {
 		System.out.println(
 				"Successfully completed transaction " + endTransactionResult.getTransactionId());
 	}
-	
+
 	/**
 	 * This method change the product price by the given product id
 	 */
 	private void changeProductPrice() {
 		Request instance = Request.instance();
-		instance.setProductId(getStringInput("Enter product's ID that its price will be changed: "));
-		
+		instance.setProductId(
+				getStringInput("Enter product's ID that its price will be changed: "));
+
 		Result result = grocery.retrieveProductsById(instance);
-		
+
 		result.setCurrentPrice(getDoubleInput("Enter the new price : "));
-		
+
 		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
 			System.out.println("Change product price failed.");
 			return;
 		}
 
-		System.out.println("Succesfully change Product price with ID " + result.getProductId() + " and new price : " + result.getCurrentPrice());
+		System.out.println("Succesfully change Product price with ID " + result.getProductId()
+				+ " and new price : " + result.getCurrentPrice());
 	}
 
 	/**
