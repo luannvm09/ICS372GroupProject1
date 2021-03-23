@@ -325,19 +325,6 @@ public class UserInterface {
 	}
 
 	/**
-	 * Product Helpers
-	 */
-	public void retrieveProducts() {
-		Request.instance().setProductName(getStringInput("Enter beginning of product name: "));
-		Iterator<Result> results = grocery.getProductsByName(Request.instance());
-		while (results.hasNext()) {
-			Result result = results.next();
-			System.out.println(result.getProductId() + ": " + result.getProductName());
-		}
-		System.out.println("\n");
-	}
-
-	/**
 	 * Order Helpers
 	 */
 	private void listOutstandingOrders() {
@@ -358,6 +345,32 @@ public class UserInterface {
 			// Print a new line for ease of reading
 			System.out.println();
 		}
+	}
+
+	/**
+	 * Product Helpers
+	 */
+	public void retrieveProductsByName() {
+		String keyword = getStringInput("Enter beginning of product name: ");
+		Request.instance().setProductName(keyword);
+		Iterator<Result> results = grocery.retrieveProductsByName(Request.instance());
+		// Check if there are no results
+		if (!results.hasNext()) {
+			System.out.println("\nUnable to find any products beginning with '" + keyword + "'.");
+			return;
+		}
+		System.out.println("\n--Products--");
+		while (results.hasNext()) {
+			Result result = results.next();
+			String output = "\n -";
+			output += " ID: " + result.getProductId();
+			output += "\n    - Name: " + result.getProductName();
+			output += "\n    - Qty: " + result.getStockOnHand();
+			output += "\n    - Price: " + result.getCurrentPrice();
+			output += "\n    - Reorder Qty: " + result.getReorderLevel();
+			System.out.println(output);
+		}
+		System.out.println("\n");
 	}
 
 	/**
@@ -383,7 +396,7 @@ public class UserInterface {
 	}
 
 	public void printProducts() {
-		Iterator<Result> results = grocery.retrieveProducts();
+		Iterator<Result> results = grocery.retrieveAllProducts();
 
 		if (!results.hasNext()) {
 			System.out.println("There are currently no products.");
@@ -544,6 +557,8 @@ public class UserInterface {
 						changeProductPrice();
 						break;
 					case (PRODUCT_INFO):
+						// get products starting with keyword
+						retrieveProductsByName();
 						break;
 					case (MEMBER_INFO):
 						// retrieve member info
