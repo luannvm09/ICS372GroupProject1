@@ -435,6 +435,16 @@ public class Grocery implements Serializable {
 		return new SafeIterator<Product>(filteredProducts, SafeIterator.PRODUCT);
 	}
 
+	public Result updateProductPrice(Request request) {
+		Result result = new Result();
+		double newPrice = request.getCurrentPrice();
+		Product product = this.stock.search(request.getProductId());
+		product.setCurrentPrice(newPrice);
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setProductFields(product);
+		return result;
+	}
+
 	/**
 	 * Order Helpers
 	 */
