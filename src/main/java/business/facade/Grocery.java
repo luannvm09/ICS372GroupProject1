@@ -91,7 +91,7 @@ public class Grocery implements Serializable {
 
 			return order;
 		}
-		
+
 		/**
 		 * Checks whether an order with a given order id exists.
 		 * 
@@ -178,11 +178,11 @@ public class Grocery implements Serializable {
 		 * @param name string of beginning of product name you want
 		 * @return a list with products whose name starts with name
 		 */
-		public Iterator<Product> retrieveProducts(String name) {
+		public Iterator<Product> retrieveProductsByName(String name) {
 			Iterator<Product> iterator = this.products.iterator();
 
-			return new FilteredIterator<Product>(iterator,
-					product -> product.getProductName().contains(name));
+			return new FilteredIterator<Product>(iterator, product -> product.getProductName()
+					.toLowerCase().startsWith(name.toLowerCase()));
 		}
 
 		/**
@@ -417,7 +417,7 @@ public class Grocery implements Serializable {
 		return result;
 	}
 
-	public Iterator<Result> retrieveProducts() {
+	public Iterator<Result> retrieveAllProducts() {
 		Iterator<Product> iterator = this.stock.iterator();
 		return new SafeIterator<Product>(iterator, SafeIterator.PRODUCT);
 	}
@@ -428,10 +428,21 @@ public class Grocery implements Serializable {
 	 * @param name the start of the product name you want
 	 * @return an iterator of products whose name start with specified string
 	 */
-	public Iterator<Result> getProductsByName(Request request) {
-		Iterator<Product> filteredProducts = this.stock.retrieveProducts(request.getProductName());
+	public Iterator<Result> retrieveProductsByName(Request request) {
+		Iterator<Product> filteredProducts =
+				this.stock.retrieveProductsByName(request.getProductName());
 
 		return new SafeIterator<Product>(filteredProducts, SafeIterator.PRODUCT);
+	}
+
+	public Result updateProductPrice(Request request) {
+		Result result = new Result();
+		double newPrice = request.getCurrentPrice();
+		Product product = this.stock.search(request.getProductId());
+		product.setCurrentPrice(newPrice);
+		result.setResultCode(Result.OPERATION_COMPLETED);
+		result.setProductFields(product);
+		return result;
 	}
 
 	/**
@@ -513,7 +524,7 @@ public class Grocery implements Serializable {
 		result.setTransactionFields(transaction);
 		return result;
 	}
-	
+
 	/**
 	 * Retrieve the product by product Id
 	 * 
