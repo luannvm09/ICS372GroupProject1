@@ -234,18 +234,6 @@ public class UserInterface {
 		}
 	}
 	
-	/**
-	 * Product Helpers
-	 */
-	private void addProduct() {
-		String productName = getStringInput("Enter product name: ");
-		String productId = getStringInput("Enter product ID:  ");
-		int reorderLevel = getIntegerInput("Enter reorder level (1 - 10,000:  "  );
-		int initialStockOnHand = getIntegerInput("Enter initial stock on hand:  ");
-		double initialPrice = getDoubleInput("Enter initial price for product:  ");
-		Product newProduct = new Product(productName, productId, reorderLevel, initialStockOnHand, initialPrice);
-		Request.instance().setProductFields(newProduct);
-	}
 
 	public void removeMember() {
 		Request.instance().setMemberId(getStringInput("Enter ID of member to remove: "));
@@ -536,17 +524,6 @@ public class UserInterface {
 		System.out.println("Succesfully change Product price with ID " + result.getProductId() + " and new price : " + result.getCurrentPrice());
 	}
 	
-	/**
-	 * method called to print all of the available stock on hand
-	 * @param none
-	 * @returns none - prints product list to console
-	 */
-	public void printStock() {
-		ReadOnlyIterator<Product> availableStock = UserInterface.grocery.getStock();
-		while(availableStock.hasNext()) {
-			System.out.println(availableStock);
-		}
-	}
 
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
