@@ -66,20 +66,21 @@ public class Product implements Serializable {
 
 	public void setCurrentPrice(double currentPrice) {
 		this.currentPrice = currentPrice;
-		System.out.println("Product: " + productName + "\tNew Price: " + currentPrice);
 	}
-	
+
 	/**
 	 * returns string representation of product object
 	 */
 	@Override
-    public String toString() {
-        return "Product name " + this.productName + "; id " + this.productId  + "; stock on hand " + this.stockOnHand+ "; price $ " + this.currentPrice+ "; reorder level " + this.reorderLevel;
-    }
+	public String toString() {
+		return "Product name " + this.productName + "; id " + this.productId + "; stock on hand "
+				+ this.stockOnHand + "; price $ " + this.currentPrice + "; reorder level "
+				+ this.reorderLevel;
+	}
 
 	/**
-	 * Hash code method produces a unique hash code for each instance assuming the
-	 * products ID's are all unique
+	 * Hash code method produces a unique hash code for each instance assuming the products ID's are
+	 * all unique
 	 * 
 	 * @param none
 	 * @return int - unique hash code for each instance
@@ -93,9 +94,8 @@ public class Product implements Serializable {
 	}
 
 	/**
-	 * An equals method that checks to see if two products are equal. This equals
-	 * method is based on the product ID and assumes that each product has a unique
-	 * ID.
+	 * An equals method that checks to see if two products are equal. This equals method is based on
+	 * the product ID and assumes that each product has a unique ID.
 	 * 
 	 * @param Object - the other book passed as object
 	 * @return boolean - true if books are equal, false if not

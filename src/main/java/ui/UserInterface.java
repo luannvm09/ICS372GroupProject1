@@ -500,20 +500,24 @@ public class UserInterface {
 	 */
 	private void changeProductPrice() {
 		Request instance = Request.instance();
-		instance.setProductId(
-				getStringInput("Enter product's ID that its price will be changed: "));
-
-		Result result = grocery.retrieveProductsById(instance);
-
-		result.setCurrentPrice(getDoubleInput("Enter the new price : "));
-
-		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
-			System.out.println("Change product price failed.");
+		String productId = getStringInput("Enter product's ID: ");
+		instance.setProductId(productId);
+		Result productSearchResult = grocery.retrieveProductsById(instance);
+		if (productSearchResult.getResultCode() == Result.PRODUCT_NOT_FOUND) {
+			System.out.println("There is no product with ID " + productId);
 			return;
 		}
 
-		System.out.println("Succesfully change Product price with ID " + result.getProductId()
-				+ " and new price : " + result.getCurrentPrice());
+		double newPrice = getDoubleInput("Enter the new price: ");
+		instance.setCurrentPrice(newPrice);
+		Result priceChangeResult = grocery.updateProductPrice(instance);
+		if (priceChangeResult.getResultCode() != Result.OPERATION_COMPLETED) {
+			System.out.println("Failed to update product price.");
+			return;
+		}
+		System.out.println("New price for " + priceChangeResult.getProductName() + " is $"
+				+ priceChangeResult.getCurrentPrice());
+		return;
 	}
 
 	/**
