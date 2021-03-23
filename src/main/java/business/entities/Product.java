@@ -5,7 +5,7 @@ import java.io.Serializable;
 // FIXME this is the beginning of the Product class, the product id needs to be unique,
 // I'm not sure if we wanted to implement that in the GroceryStore Facade, or here in Product
 // I've written some classes like hashCode() and equals() based on the assumption that product's ID
-// will be unique
+// will be unique. Change!
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String productName;
@@ -68,6 +68,14 @@ public class Product implements Serializable {
 		this.currentPrice = currentPrice;
 		System.out.println("Product: " + productName + "\tNew Price: " + currentPrice);
 	}
+	
+	/**
+	 * returns string representation of product object
+	 */
+	@Override
+    public String toString() {
+        return "Product name " + this.productName + "; id " + this.productId  + "; stock on hand " + this.stockOnHand+ "; price $ " + this.currentPrice+ "; reorder level " + this.reorderLevel;
+    }
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the

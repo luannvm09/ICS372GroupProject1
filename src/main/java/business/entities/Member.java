@@ -19,20 +19,13 @@ public class Member implements Serializable {
 	private String memberPhoneNumber;
 	private double feePaid;
 	private Calendar dateJoined;
+	private List<Transaction> transactions = new LinkedList<Transaction>();
 
 	private static final String MEMBER_STRING = "M";
 	private static int idCounter;
 
-	/**
-	 * Idea is creating the productPurchased List to store all of product in the
-	 * certain time. If the customer want to return, the returned products should be
-	 * in this list.
-	 */
-	private List<Product> productPurchased = new LinkedList<Product>();
-	private List<Transaction> transactions = new LinkedList<Transaction>();
-
-	public Member(String memberName, String memberAddress, String memberPhoneNumber, Calendar dateJoined,
-			double feePaid) {
+	public Member(String memberName, String memberAddress, String memberPhoneNumber,
+			Calendar dateJoined, double feePaid) {
 		this.memberId = MEMBER_STRING + ++idCounter;
 		this.memberName = memberName;
 		this.memberAddress = memberAddress;
@@ -41,32 +34,9 @@ public class Member implements Serializable {
 		this.feePaid = feePaid;
 	}
 
-	// FIXME
-	// I am not sure these lines of code. I want to save the purchased products on
-	// the list
-	// then if the members return products, we will mark on transaction "return"
-	/**
-	 * Stores the product is purchased to the member
-	 * 
-	 * @param product the product to be purchased
-	 * @return true if the product could be marked as issued. always true currently
-	 */
-	/*
-	 * public boolean purchase(Product product) { if (productPurchased.add(product))
-	 * { transactions.add(new Transaction("Purchased", product.getProductName()));
-	 * return true; } return false; }
-	 * 
-	 *//**
-		 * Marks the product as not issued to the member
-		 * 
-		 * @param product the product to be returned
-		 * @return true if the product could be marked as marked as returned
-		 *//*
-			 * public boolean returnProduct(Product product) { if
-			 * (productPurchased.remove(product)) { transactions.add(new
-			 * Transaction("Returned", product.getProductName())); return true; } return
-			 * false; }
-			 */
+	public boolean addNewUserTransaction(Transaction transaction) {
+		return this.transactions.add(transaction);
+	}
 
 	/**
 	 * Gets an iterator to a collection of selected transactions
@@ -75,7 +45,7 @@ public class Member implements Serializable {
 	 * @return the iterator to the collection
 	 */
 	public Iterator<Transaction> getTransactionsOnDate(Calendar startDate, Calendar endDate) {
-		return new FilteredIterator(transactions.iterator(),
+		return new FilteredIterator<Transaction>(transactions.iterator(),
 				transaction -> transaction.betweenDates(startDate, endDate));
 	}
 
@@ -178,9 +148,29 @@ public class Member implements Serializable {
 		this.feePaid = feePaid;
 	}
 
+
 	/**
-	 * Hash code method produces a unique hash code for each instance assuming the
-	 * members ID's are all unique
+	 * a way of representing member different from toString
+	 * 
+	 * @return string representation of member object
+	 */
+	public String output() {
+		return "Member id " + this.memberId + "; address " + this.memberAddress + "; fee paid $"
+				+ this.feePaid;
+	}
+
+	/**
+	 * returns string representation of member object
+	 */
+	@Override
+	public String toString() {
+		return "Member name " + this.memberName + "; date joined " + this.dateJoined + "; address "
+				+ this.memberAddress + "; phone number " + this.memberPhoneNumber;
+	}
+
+	/**
+	 * Hash code method produces a unique hash code for each instance assuming the members ID's are
+	 * all unique
 	 * 
 	 * @param none
 	 * @return int - unique hash code for each instance
@@ -194,9 +184,8 @@ public class Member implements Serializable {
 	}
 
 	/**
-	 * An equals method that checks to see if two members are equal. This equals
-	 * method is based on the member ID and assumes that each member has a unique
-	 * ID.
+	 * An equals method that checks to see if two members are equal. This equals method is based on
+	 * the member ID and assumes that each member has a unique ID.
 	 * 
 	 * @param Object - the other member passed as object
 	 * @return boolean - true if member are equal, false if not
@@ -228,7 +217,8 @@ public class Member implements Serializable {
 		output.writeObject(idCounter);
 	}
 
-	public static void retrieve(ObjectInputStream input) throws IOException, ClassNotFoundException {
+	public static void retrieve(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
 		Member.idCounter = (int) input.readObject();
 	}
 

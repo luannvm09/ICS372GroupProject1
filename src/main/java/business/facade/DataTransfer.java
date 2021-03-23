@@ -1,15 +1,17 @@
 package business.facade;
 
 import java.util.Calendar;
-
+import java.util.LinkedList;
+import business.entities.LineItem;
 import business.entities.Member;
+import business.entities.Order;
 import business.entities.Product;
+import business.entities.Transaction;
 
 /**
- * DataTransfer is a class that will carry out the transfer of data from the UI
- * and the GroceryStore class. It will store the instance variables of both
- * member and product. These fields can be supplied and sent in a request, or
- * used to return values in a result.
+ * DataTransfer is a class that will carry out the transfer of data from the UI and the GroceryStore
+ * class. It will store the instance variables of both member and product. These fields can be
+ * supplied and sent in a request, or used to return values in a result.
  * 
  * @author jordan dodd
  */
@@ -20,6 +22,9 @@ public abstract class DataTransfer {
 	private final static int NONE_YEAR = 1900;
 	private final static int NONE_MONTH = 1;
 	private final static int NONE_DAY = 1;
+	private final static Product NONE_PRODUCT =
+			new Product(NONE_STRING, NONE_STRING, NONE_INT, NONE_INT, NONE_DOUBLE);
+	private final static LinkedList<LineItem> NONE_LINE_ITEMS = new LinkedList<>();
 	// Member fields
 	private String memberId;
 	private String memberName;
@@ -33,6 +38,19 @@ public abstract class DataTransfer {
 	private double currentPrice;
 	private int stockOnHand;
 	private int reorderLevel;
+	// Order fields
+	private String orderId;
+	private Product orderProduct;
+	private int orderQuantity;
+	private Calendar orderDate;
+	// Transaction fields
+	private String transactionId;
+	private Calendar transactionDate;
+	private LinkedList<LineItem> lineItems;
+	// Checkout fields
+	private int checkoutQuantity;
+	private double checkoutTotal;
+	private double lineTotal;
 
 	/**
 	 * constructor sets all fields to none
@@ -132,10 +150,89 @@ public abstract class DataTransfer {
 		this.reorderLevel = reorderLevel;
 	}
 
+	public String getOrderId() {
+		return this.orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public Product getOrderProduct() {
+		return this.orderProduct;
+	}
+
+	public void setOrderProduct(Product orderProduct) {
+		this.orderProduct = orderProduct;
+	}
+
+	public int getOrderQuantity() {
+		return this.orderQuantity;
+	}
+
+	public void setOrderQuantity(int orderQuantity) {
+		this.orderQuantity = orderQuantity;
+	}
+
+	public Calendar getOrderDate() {
+		return this.orderDate;
+	}
+
+	public void setOrderDate(Calendar orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	public Calendar getTransactionDate() {
+		return transactionDate;
+	}
+
+	public void setTransactionDate(Calendar transactionDate) {
+		this.transactionDate = transactionDate;
+	}
+
+	public LinkedList<LineItem> getLineItems() {
+		return lineItems;
+	}
+
+	public void setLineItems(LinkedList<LineItem> lineItems) {
+		this.lineItems = lineItems;
+	}
+
+	public int getCheckoutQuantity() {
+		return this.checkoutQuantity;
+	}
+
+	public void setCheckoutQuantity(int checkoutQuantity) {
+		this.checkoutQuantity = checkoutQuantity;
+	}
+
+	public double getCheckoutTotal() {
+		return this.checkoutTotal;
+	}
+
+	public void setCheckoutTotal(double checkoutTotal) {
+		this.checkoutTotal = checkoutTotal;
+	}
+
+	public double getLineTotal() {
+		return this.lineTotal;
+	}
+
+	public void setLineTotal(double lineTotal) {
+		this.lineTotal = lineTotal;
+	}
+
 	/**
-	 * This class will set the product fields with the values from a passed in
-	 * product. It will leave the member fields in this DataTransfer =
-	 * DataTransfer.NONE_STRING
+	 * This class will set the product fields with the values from a passed in product. It will
+	 * leave the member fields in this DataTransfer = DataTransfer.NONE_STRING
 	 * 
 	 * @param product
 	 */
@@ -152,13 +249,28 @@ public abstract class DataTransfer {
 		this.memberName = member.getMemberName();
 		this.memberPhoneNumber = member.getMemberPhoneNumber();
 		this.memberAddress = member.getMemberAddress();
+		this.feePaid = member.getFeePaid();
+		this.dateJoined = member.getDateJoined();
+	}
+
+	public void setOrderFields(Order order) {
+		this.orderId = order.getOrderId();
+		this.orderProduct = order.getProduct();
+		this.orderQuantity = order.getQuantity();
+		this.orderDate = order.getDate();
+	}
+
+	public void setTransactionFields(Transaction transaction) {
+		this.transactionId = transaction.getTransactionId();
+		this.transactionDate = transaction.getDate();
+		this.lineItems = transaction.getLineItems();
+		this.checkoutTotal = transaction.getTotalCost();
 	}
 
 	/**
-	 * Reset sets all fields to a default value of NONE or constants NONE_INT and
-	 * NONE_DOUBLE. reset() does not return null values, so it is clear when a field
-	 * does not contain meaningful data. Constants are used as to not confuse a
-	 * sentinel value for an actual requested value.
+	 * Reset sets all fields to a default value of NONE or constants NONE_INT and NONE_DOUBLE.
+	 * reset() does not return null values, so it is clear when a field does not contain meaningful
+	 * data. Constants are used as to not confuse a sentinel value for an actual requested value.
 	 * 
 	 * @param
 	 * @return void
@@ -179,6 +291,19 @@ public abstract class DataTransfer {
 		stockOnHand = DataTransfer.NONE_INT;
 		currentPrice = DataTransfer.NONE_DOUBLE;
 		reorderLevel = DataTransfer.NONE_INT;
+		// order fields
+		orderId = NONE_STRING;
+		orderProduct = NONE_PRODUCT;
+		orderQuantity = NONE_INT;
+		orderDate = noneCalendar;
+		// transaction fields
+		transactionId = NONE_STRING;
+		transactionDate = noneCalendar;
+		lineItems = NONE_LINE_ITEMS;
+		// checkout fields
+		checkoutQuantity = NONE_INT;
+		checkoutTotal = NONE_DOUBLE;
+		lineTotal = NONE_DOUBLE;
 	}
 
 }
