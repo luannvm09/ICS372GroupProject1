@@ -117,27 +117,25 @@ public class UserInterface {
 	}
 
 	/**
-	 * getIntegerInput() will be used to get inputs that are not constrained to 0-14
-	 * @param String - message output
-	 * @return int - value from input
+	 * A method to get an Int value from user input to be used in
+	 * for making a command
+	 * 
+	 * @param message
+	 * @return int value from String input
 	 */
 	private int getIntegerInput(String message) {
 		do {
 			try {
 				String rawUserInput = getFirstWord(message);
 				Integer userIntegerInput = Integer.valueOf(rawUserInput);
-				if(userIntegerInput > 0 && userIntegerInput < 10_000) {
-					return userIntegerInput.intValue();
-				}
-				else {
-					throw new NumberFormatException();
-				}
+				return userIntegerInput.intValue();
 			} catch (NumberFormatException nfe) {
-				System.out.println("Number must be between 0 and 10,000");
+				System.out
+						.println("Input must be a number 0 - 14\n" + "Enter " + HELP + " for help");
 			}
 		} while (true);
 	}
-	
+
 	/**
 	 * 
 	 * 
@@ -241,7 +239,6 @@ public class UserInterface {
 					+ Request.instance().getMemberName() + "'");
 			return;
 		}
-
 		System.out.println("-- Members --");
 		while (results.hasNext()) {
 			Result result = results.next();

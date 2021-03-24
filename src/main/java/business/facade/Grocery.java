@@ -52,7 +52,6 @@ public class Grocery implements Serializable {
 		public Iterator<Transaction> iterator() {
 			return this.transactions.iterator();
 		}
-
 	}
 
 	private class OrderList implements Iterable<Order>, Serializable {
@@ -579,7 +578,6 @@ public class Grocery implements Serializable {
 	 * @param request
 	 * @return result
 	 */
-
 	public Result retrieveProductsById(Request request) {
 		String productId = request.getProductId();
 		Product product = this.stock.search(productId);
@@ -592,6 +590,5 @@ public class Grocery implements Serializable {
 		result.setProductFields(product);
 		return result;
 	}
-
 }
 
