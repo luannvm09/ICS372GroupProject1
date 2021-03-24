@@ -42,8 +42,11 @@ public class UserInterface {
 	 * private constructor for singleton pattern
 	 */
 	private UserInterface() {
-		// FIXME check if there is saved data
-		UserInterface.grocery = Grocery.instance();
+		if(getYesOrNoInput("Look for saved data: (yes or no)")) {
+			retrieveData();
+		}else {
+			grocery = Grocery.instance();
+		}
 	}
 
 	/**
@@ -635,6 +638,7 @@ public class UserInterface {
 						break;
 					case (SAVE):
 						// save
+						saveData();
 						break;
 					case (HELP):
 						System.out.println(showMenu());
@@ -648,8 +652,42 @@ public class UserInterface {
 			}
 		}
 	}
+	
+	/**
+	 * retrieve data helper
+	 */
+	private void retrieveData() {
+		try {
+			if (grocery == null) {
+				grocery = Grocery.retrieveData();
+				if (grocery != null) {
+					System.out.println(" The grocery has been successfully retrieved from the file GroceryData \n");
+				} else {
+					System.out.println("File doesnt exist; creating new grocery");
+					grocery = Grocery.instance();
+				}
+			}
+		} catch (Exception cnfe) {
+			cnfe.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 * TODO give better names
+	 */
+    private void saveData() {
+        if (grocery.saveData()) {
+            System.out.println(" The current data has been successfully saved in the file GroceryyData \n");
+        } else {
+            System.out.println(" There has been an error in saving \n");
+        }
+    }
+	/**
+	 * TODO
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		UserInterface ui = UserInterface.instance();
-		ui.showUserInterface();
+		UserInterface.instance().showUserInterface();
 	}
 }

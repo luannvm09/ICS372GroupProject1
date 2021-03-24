@@ -1,5 +1,8 @@
 package business.entities;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -109,6 +112,22 @@ public class Transaction implements Serializable {
 	@Override
 	public String toString() {
 		return (this.transactionId + ": " + this.lineItems.size() + " Items in transaction");
+	}
+	
+	/**
+	 * method to retrieve data
+	 */
+	public static void retrieve(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		Transaction.idCounter = (int) input.readObject();
+	}
+	/**
+	 * save method for transaction counter
+	 * @param output
+	 * @throws IOException
+	 */
+	public static void save(ObjectOutputStream output) throws IOException {
+		output.writeObject(idCounter);
 	}
 
 }
