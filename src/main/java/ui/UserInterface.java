@@ -347,6 +347,28 @@ public class UserInterface {
 		}
 	}
 
+	public void processShipment() {
+		Request instance = Request.instance();
+		boolean moreOrders = true;
+		while (moreOrders) {
+			String orderId = getStringInput("Enter order id: ");
+			instance.setOrderId(orderId);
+			Result findOrderResult = grocery.processShipment(instance);
+			// Ensure that order exists first
+			if (findOrderResult.getResultCode() == Result.ORDER_NOT_FOUND) {
+				System.out.println("Order with ID " + orderId + " was not found.");
+			} else {
+				System.out.println("Order succesfully processed!");
+				System.out.println("Product ID: " + findOrderResult.getProductId());
+				System.out.println("Product Name: " + findOrderResult.getProductName());
+				System.out.println("New Quantity: " + findOrderResult.getStockOnHand());
+			}
+			// Add new line
+			System.out.println("");
+			moreOrders = getYesOrNoInput("Would you like to process more order? (yes/no): ");
+		}
+	}
+
 	/**
 	 * Product Helpers
 	 */
@@ -555,6 +577,7 @@ public class UserInterface {
 						break;
 					case (PROCESS_SHIPMENT):
 						// process a shipment
+						processShipment();
 						break;
 					case (CHANGE_PRODUCT_PRICE):
 						// change product price
