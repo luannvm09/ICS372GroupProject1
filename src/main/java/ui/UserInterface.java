@@ -117,26 +117,6 @@ public class UserInterface {
 	}
 
 	/**
-	 * A method to get an Int value from user input to be used in
-	 * for making a command
-	 * 
-	 * @param message
-	 * @return int value from String input
-	 */
-	private int getUIIntegerInput(String message) {
-		do {
-			try {
-				String rawUserInput = getFirstWord(message);
-				Integer userIntegerInput = Integer.valueOf(rawUserInput);
-				return userIntegerInput.intValue();
-			} catch (NumberFormatException nfe) {
-				System.out
-						.println("Input must be a number 0 - 14\n" + "Enter " + HELP + " for help");
-			}
-		} while (true);
-	}
-	
-	/**
 	 * getIntegerInput() will be used to get inputs that are not constrained to 0-14
 	 * @param String - message output
 	 * @return int - value from input
