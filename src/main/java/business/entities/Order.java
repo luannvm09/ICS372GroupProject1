@@ -8,7 +8,8 @@ public class Order {
 	private int quantity;
 	private Calendar date;
 
-	private static final String ORDER_ID_PREFIX = "0";
+	// Prefix with "R" instead of "O" because "O" looks like "0"
+	private static final String ORDER_ID_PREFIX = "R";
 	private static int idCounter = 0;
 
 	/**
