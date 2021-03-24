@@ -8,10 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-
 import java.util.List;
 import business.entities.LineItem;
-
 import business.facade.Grocery;
 import business.facade.Request;
 import business.facade.Result;
@@ -138,7 +136,7 @@ public class UserInterface {
 
 	/**
 	 * 
-	 * 
+	 * Method to get user inputs in form of a double
 	 * @param message
 	 * @return
 	 */
@@ -210,14 +208,12 @@ public class UserInterface {
 		} else {
 			System.out.println(result.getMemberName() + "'s id is " + result.getMemberId());
 		}
-	}
-	
+	}	
 
 	public void removeMember() {
 		Request.instance().setMemberId(getStringInput("Enter ID of member to remove: "));
 		String memberId = Request.instance().getMemberId();
 		Result result = grocery.removeMemberByID(Request.instance());
-
 
 		if (result.getResultCode() == Result.NO_SUCH_MEMBER) {
 			System.out.println("Failed to remove member with ID " + memberId);
@@ -229,6 +225,9 @@ public class UserInterface {
 		}
 	}
 
+	/**
+	 * TODO
+	 */
 	public void retrieveMemberInfo() {
 		Request.instance().setMemberName(getStringInput("Enter the beginning of Members name: "));
 
@@ -253,7 +252,10 @@ public class UserInterface {
 			System.out.println();
 		}
 	}
-
+	
+	/**
+	 * TODO
+	 */
 	public void printMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
 
@@ -292,6 +294,9 @@ public class UserInterface {
 
 	}
 
+	/**
+	 * TODO
+	 */
 	public void getMembersTransactions() {
 		String memberId = getStringInput("Enter member id: ");
 		// Check and make sure member even exists first.
@@ -324,6 +329,9 @@ public class UserInterface {
 		System.out.println("--End of transactions--\n");
 	}
 
+	/**
+	 * TODO
+	 */
 	public void findMemberByName() {
 		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
 		Iterator<Result> members = grocery.retrieveMembersByName(Request.instance());
@@ -334,7 +342,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Order Helpers
+	 * Order Helpers TODO
 	 */
 	private void listOutstandingOrders() {
 		Iterator<Result> orders = grocery.getOutstandingOrders();
@@ -356,6 +364,9 @@ public class UserInterface {
 		}
 	}
 
+	/**
+	 * TODO
+	 */
 	public void processShipment() {
 		Request instance = Request.instance();
 		boolean moreOrders = true;
@@ -379,7 +390,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Product Helpers
+	 * Product Helpers TODO
 	 */
 	public void retrieveProductsByName() {
 		String keyword = getStringInput("Enter beginning of product name: ");
@@ -426,6 +437,9 @@ public class UserInterface {
 		System.out.println("Succesfully created Product with ID " + instance.getProductId());
 	}
 
+	/**
+	 * TODO
+	 */
 	public void printProducts() {
 		Iterator<Result> results = grocery.retrieveAllProducts();
 
@@ -447,7 +461,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Transaction Helpers
+	 * Transaction Helpers TODO
 	 */
 
 	private Request getCheckoutItemRequest() {
@@ -459,6 +473,9 @@ public class UserInterface {
 		return instance;
 	}
 
+	/**
+	 * TODO
+	 */
 	private void checkout() {
 		/**
 		 * Before starting transaction, ensure that the user's id is valid.
@@ -538,7 +555,6 @@ public class UserInterface {
 			System.out.println("There is no product with ID " + productId);
 			return;
 		}
-
 		double newPrice = getDoubleInput("Enter the new price: ");
 		instance.setCurrentPrice(newPrice);
 		Result priceChangeResult = grocery.updateProductPrice(instance);
@@ -551,7 +567,6 @@ public class UserInterface {
 		return;
 	}
 	
-
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
 	 * process inputs
