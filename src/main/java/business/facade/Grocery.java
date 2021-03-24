@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import business.entities.LineItem;
 import business.entities.Member;
 import business.entities.Order;
 import business.entities.Product;
@@ -459,6 +460,25 @@ public class Grocery implements Serializable {
 		return new SafeIterator<Order>(iterator, SafeIterator.ORDER);
 	}
 
+	public Result processShipment(Request request) {
+		Result result = new Result();
+		String orderId = request.getOrderId();
+		Order order = this.orders.search(orderId);
+		// Order was not found
+		if (order == null) {
+			result.setResultCode(Result.ORDER_NOT_FOUND);
+			return result;
+		}
+		// Order was found, update stock with order quantity + stock on hand
+		Product product = order.getProduct();
+		int newStock = product.getStockOnHand() + order.getQuantity();
+		product.setStockOnHand(newStock);
+		// Order no longer outstanding, remove from orders
+		this.orders.removeOrder(orderId);
+		result.setProductFields(product);
+		return result;
+	}
+
 	/**
 	 * Transaction Helpers
 	 */
@@ -505,24 +525,52 @@ public class Grocery implements Serializable {
 		return result;
 	}
 
+	/**
+	 * Ends transaction by adding the Transaction object to the corresponding member's transaction
+	 * instance variable
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Result endTransaction(Request request) {
 		Result result = new Result();
-
 		String transactionId = request.getTransactionId();
 		Transaction transaction = this.transactions.getTransactionById(transactionId);
-
 		String memberId = request.getMemberId();
 		Member member = this.members.search(memberId);
-
+		// Member wasn't found, cannot add transaction to their transactions instance variable
 		if (member == null) {
 			result.setResultCode(Result.NO_SUCH_MEMBER);
 			return result;
 		}
 
+		// Add the transaction to member
 		member.addNewUserTransaction(transaction);
+		// Make any necessary orders for stock that hits reorder level
+		this.verifyStock(transaction);
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		result.setTransactionFields(transaction);
 		return result;
+	}
+
+	private void verifyStock(Transaction transaction) {
+		List<LineItem> lineItems = transaction.getLineItems();
+		Iterator<LineItem> iterator = lineItems.iterator();
+
+		while (iterator.hasNext()) {
+			LineItem lineItem = iterator.next();
+			Product product = lineItem.getProduct();
+			int lineItemQuantity = lineItem.getQuantity();
+			int stockOnHand = product.getStockOnHand();
+			int reorderLevel = product.getReorderLevel();
+			// If quantity in stock is less than or equal to reorder level, create new order
+			if (stockOnHand - lineItemQuantity <= reorderLevel) {
+				int orderQuantity = reorderLevel * 2;
+				Order restockOrder = new Order(product, orderQuantity, Calendar.getInstance());
+				this.orders.addOrder(restockOrder);
+			}
+		}
+		return;
 	}
 
 	/**
