@@ -656,4 +656,8 @@ public class UserInterface {
 			}
 		}
 	}
+	public static void main(String[] args) {
+		UserInterface ui = UserInterface.instance();
+		ui.showUserInterface();
+	}
 }
