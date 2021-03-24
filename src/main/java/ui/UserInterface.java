@@ -42,8 +42,11 @@ public class UserInterface {
 	 * private constructor for singleton pattern
 	 */
 	private UserInterface() {
-		// FIXME check if there is saved data
-		UserInterface.grocery = Grocery.instance();
+		if(getYesOrNoInput("Look for saved data: (yes or no)")) {
+			retrieveData();
+		}else {
+			grocery = Grocery.instance();
+		}
 	}
 
 	/**
@@ -115,7 +118,8 @@ public class UserInterface {
 	}
 
 	/**
-	 * A method to get an Int value from user input
+	 * A method to get an Int value from user input to be used in
+	 * for making a command
 	 * 
 	 * @param message
 	 * @return int value from String input
@@ -133,6 +137,12 @@ public class UserInterface {
 		} while (true);
 	}
 
+	/**
+	 * 
+	 * Method to get user inputs in form of a double
+	 * @param message
+	 * @return
+	 */
 	private double getDoubleInput(String message) {
 
 		do {
@@ -201,13 +211,12 @@ public class UserInterface {
 		} else {
 			System.out.println(result.getMemberName() + "'s id is " + result.getMemberId());
 		}
-	}
+	}	
 
 	public void removeMember() {
 		Request.instance().setMemberId(getStringInput("Enter ID of member to remove: "));
 		String memberId = Request.instance().getMemberId();
 		Result result = grocery.removeMemberByID(Request.instance());
-
 
 		if (result.getResultCode() == Result.NO_SUCH_MEMBER) {
 			System.out.println("Failed to remove member with ID " + memberId);
@@ -219,6 +228,9 @@ public class UserInterface {
 		}
 	}
 
+	/**
+	 * TODO
+	 */
 	public void retrieveMemberInfo() {
 		Request.instance().setMemberName(getStringInput("Enter the beginning of Members name: "));
 
@@ -229,7 +241,6 @@ public class UserInterface {
 					+ Request.instance().getMemberName() + "'");
 			return;
 		}
-
 		System.out.println("-- Members --");
 		while (results.hasNext()) {
 			Result result = results.next();
@@ -244,7 +255,10 @@ public class UserInterface {
 			System.out.println();
 		}
 	}
-
+	
+	/**
+	 * TODO
+	 */
 	public void printMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
 
@@ -283,6 +297,9 @@ public class UserInterface {
 
 	}
 
+	/**
+	 * TODO
+	 */
 	public void getMembersTransactions() {
 		String memberId = getStringInput("Enter member id: ");
 		// Check and make sure member even exists first.
@@ -315,6 +332,9 @@ public class UserInterface {
 		System.out.println("--End of transactions--\n");
 	}
 
+	/**
+	 * TODO
+	 */
 	public void findMemberByName() {
 		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
 		Iterator<Result> members = grocery.retrieveMembersByName(Request.instance());
@@ -325,7 +345,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Order Helpers
+	 * Order Helpers TODO
 	 */
 	private void listOutstandingOrders() {
 		Iterator<Result> orders = grocery.getOutstandingOrders();
@@ -347,6 +367,9 @@ public class UserInterface {
 		}
 	}
 
+	/**
+	 * TODO
+	 */
 	public void processShipment() {
 		Request instance = Request.instance();
 		boolean moreOrders = true;
@@ -370,7 +393,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Product Helpers
+	 * Product Helpers TODO
 	 */
 	public void retrieveProductsByName() {
 		String keyword = getStringInput("Enter beginning of product name: ");
@@ -417,6 +440,9 @@ public class UserInterface {
 		System.out.println("Succesfully created Product with ID " + instance.getProductId());
 	}
 
+	/**
+	 * TODO
+	 */
 	public void printProducts() {
 		Iterator<Result> results = grocery.retrieveAllProducts();
 
@@ -438,7 +464,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Transaction Helpers
+	 * Transaction Helpers TODO
 	 */
 
 	private Request getCheckoutItemRequest() {
@@ -450,6 +476,9 @@ public class UserInterface {
 		return instance;
 	}
 
+	/**
+	 * TODO
+	 */
 	private void checkout() {
 		/**
 		 * Before starting transaction, ensure that the user's id is valid.
@@ -529,7 +558,6 @@ public class UserInterface {
 			System.out.println("There is no product with ID " + productId);
 			return;
 		}
-
 		double newPrice = getDoubleInput("Enter the new price: ");
 		instance.setCurrentPrice(newPrice);
 		Result priceChangeResult = grocery.updateProductPrice(instance);
@@ -541,7 +569,7 @@ public class UserInterface {
 				+ priceChangeResult.getCurrentPrice());
 		return;
 	}
-
+	
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
 	 * process inputs
@@ -554,6 +582,7 @@ public class UserInterface {
 		boolean continueApplication = true;
 		while (continueApplication) {
 			try {
+
 				int userChoice = getIntegerInput("\nEnter a command (14 for help): ");
 				switch (userChoice) {
 					case (EXIT):
@@ -609,6 +638,7 @@ public class UserInterface {
 						break;
 					case (SAVE):
 						// save
+						saveData();
 						break;
 					case (HELP):
 						System.out.println(showMenu());
@@ -621,5 +651,43 @@ public class UserInterface {
 				System.exit(0);
 			}
 		}
+	}
+	
+	/**
+	 * retrieve data helper
+	 */
+	private void retrieveData() {
+		try {
+			if (grocery == null) {
+				grocery = Grocery.retrieveData();
+				if (grocery != null) {
+					System.out.println(" The grocery has been successfully retrieved from the file GroceryData \n");
+				} else {
+					System.out.println("File doesnt exist; creating new grocery");
+					grocery = Grocery.instance();
+				}
+			}
+		} catch (Exception cnfe) {
+			cnfe.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 * TODO give better names
+	 */
+    private void saveData() {
+        if (grocery.saveData()) {
+            System.out.println(" The current data has been successfully saved in the file GroceryyData \n");
+        } else {
+            System.out.println(" There has been an error in saving \n");
+        }
+    }
+	/**
+	 * TODO
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		UserInterface.instance().showUserInterface();
 	}
 }

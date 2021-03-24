@@ -1,8 +1,12 @@
 package business.entities;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class Order {
+public class Order implements Serializable{
 	private String orderId;
 	private Product product;
 	private int quantity;
@@ -40,6 +44,20 @@ public class Order {
 
 	public Calendar getDate() {
 		return this.date;
+	}
+	/**
+	 * save method
+	 */
+	public static void save(ObjectOutputStream output) throws IOException {
+		output.writeObject(idCounter);
+	}
+	
+	/**
+	 * retrieve counter value
+	 */
+	public static void retrieve(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		Order.idCounter = (int) input.readObject();
 	}
 
 	@Override

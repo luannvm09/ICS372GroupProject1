@@ -1,5 +1,10 @@
 package business.facade;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -52,7 +57,6 @@ public class Grocery implements Serializable {
 		public Iterator<Transaction> iterator() {
 			return this.transactions.iterator();
 		}
-
 	}
 
 	private class OrderList implements Iterable<Order>, Serializable {
@@ -591,5 +595,45 @@ public class Grocery implements Serializable {
 		result.setProductFields(product);
 		return result;
 	}
-
+	
+	/**
+	 * method to retrieve a previous values
+	 */
+	public static Grocery retrieveData() {
+		try {
+			FileInputStream savedFile = new FileInputStream("GroceryData");
+			ObjectInputStream inputStream = new ObjectInputStream(savedFile);
+			grocery = (Grocery) inputStream.readObject();
+			Member.retrieve(inputStream);
+			Order.retrieve(inputStream);
+			Transaction.retrieve(inputStream);
+			return grocery;
+		} catch (ClassNotFoundException cnfe) {
+			cnfe.printStackTrace();
+			return null;
+		}catch(IOException ioe) {
+			ioe.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Method to save data from
+	 */
+	public static boolean saveData() {
+		try {
+			FileOutputStream dataFile = new FileOutputStream("GroceryData");
+			ObjectOutputStream outputStream = new ObjectOutputStream(dataFile);
+			outputStream.writeObject(grocery);
+			Member.save(outputStream);
+			Order.save(outputStream);
+			Transaction.save(outputStream);
+			dataFile.close();
+			return true;
+		}catch(IOException ioe) {
+			ioe.printStackTrace();
+			return false;
+		}
+	}
 }
+
