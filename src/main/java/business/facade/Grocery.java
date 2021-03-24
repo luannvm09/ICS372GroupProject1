@@ -460,6 +460,25 @@ public class Grocery implements Serializable {
 		return new SafeIterator<Order>(iterator, SafeIterator.ORDER);
 	}
 
+	public Result processShipment(Request request) {
+		Result result = new Result();
+		String orderId = request.getOrderId();
+		Order order = this.orders.search(orderId);
+		// Order was not found
+		if (order == null) {
+			result.setResultCode(Result.ORDER_NOT_FOUND);
+			return result;
+		}
+		// Order was found, update stock with order quantity + stock on hand
+		Product product = order.getProduct();
+		int newStock = product.getStockOnHand() + order.getQuantity();
+		product.setStockOnHand(newStock);
+		// Order no longer outstanding, remove from orders
+		this.orders.removeOrder(orderId);
+		result.setProductFields(product);
+		return result;
+	}
+
 	/**
 	 * Transaction Helpers
 	 */

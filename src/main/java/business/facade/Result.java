@@ -17,6 +17,7 @@ public class Result extends DataTransfer {
     public static final int OPERATION_FAILED = 6;
     public static final int NO_SUCH_MEMBER = 7;
     public static final int TRANSACTION_NOT_FOUND = 8;
+    public static final int ORDER_NOT_FOUND = 9;
 
     private int resultCode;
 
