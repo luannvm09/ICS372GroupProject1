@@ -262,7 +262,8 @@ public class UserInterface {
 	 */
 	public void listMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
-
+		
+		System.out.println("\n\t---Members---\n");
 		while (iterator.hasNext()) {
 			Result result = iterator.next();
 			System.out.println("Member ID: " + result.getMemberId());
@@ -270,7 +271,7 @@ public class UserInterface {
 			System.out.println("Member Join Date: " + formatCalendar(result.getDateJoined()));
 			System.out.println("Member Address: " + result.getMemberAddress());
 			System.out.println("Member Phone Number: " + result.getMemberPhoneNumber());
-			System.out.println("Member Fee Paid: $" + result.getFeePaid());
+			System.out.println("Member Fee Paid: $" + result.getFeePaid() + "\n");
 		}
 	}
 
