@@ -44,6 +44,13 @@ public class AutomatedTester {
 	 * Tests removeMember function. 
 	 */
 	public void testRemoveMember() {
+		Request.instance().setMemberId("M8");
+		Result result = Grocery.instance().removeMember(Request.instance());
+		assert result.getResultCode() == Result.NO_SUCH_MEMBER;
+		Request.instance().setMemberId("M1");
+		result = Grocery.instance().removeMember(Request.instance());
+		assert result.getResultCode() == Result.OPERATION_COMPLETED;
+		//more asserts needed
 		
 	}
 
@@ -64,6 +71,7 @@ public class AutomatedTester {
 			assert result.getStockOnHand() ==currentStock[count];
 			assert result.getCurrentPrice()==currentPrice[count];
 			assert result.getReorderLevel()==reorderQty[count];
+			//add a test for ordering products after adding them
 		}
 	}
 	
