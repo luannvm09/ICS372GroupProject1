@@ -69,7 +69,7 @@ public class UserInterface {
 	/**
 	 * This is a method to get the list of input commands
 	 * 
-	 * @returns menu - used in help command
+	 * @return string which shows the available commands
 	 */
 	private String showMenu() {
 		String menu = "Make a selection, enter: \n" + ADD_MEMBER + ") Enroll a member\n"
@@ -145,11 +145,10 @@ public class UserInterface {
 	 * 
 	 * Method to get user inputs in form of a double
 	 * 
-	 * @param message
-	 * @return
+	 * @param message prompt to display to user
+	 * @return user inputted double
 	 */
 	private double getDoubleInput(String message) {
-
 		do {
 			try {
 				String rawUserInput = getFirstWord(message);
@@ -160,6 +159,12 @@ public class UserInterface {
 		} while (true);
 	}
 
+	/**
+	 * Prompt the user for a yes or no response. Don't accept any other input.
+	 * 
+	 * @param message Prompt for user
+	 * @return true if user entered yes, else false
+	 */
 	private boolean getYesOrNoInput(String message) {
 		do {
 			String input = getStringInput(message).toLowerCase();
@@ -174,10 +179,10 @@ public class UserInterface {
 	}
 
 	/**
-	 * method to get a date from user
+	 * Get a date formatted string from user
 	 * 
-	 * @param message -- message shown to user
-	 * @return -- date object input
+	 * @param message message shown to user
+	 * @return calendar object representing user input
 	 */
 	private Calendar getDate(String message) {
 		do {
@@ -193,6 +198,12 @@ public class UserInterface {
 		} while (true);
 	}
 
+	/**
+	 * Convert a calendar object into a readable string
+	 * 
+	 * @param calendar calendar object to be converted to a string
+	 * @return readable string that represents calendar
+	 */
 	private String formatCalendar(Calendar calendar) {
 		String output = "";
 		output += calendar.get(Calendar.MONTH) + "/";
@@ -214,7 +225,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Member Helpers
+	 * Add a member to the coop
 	 */
 	private void addMember() {
 		Request.instance().setMemberName(getStringInput("Enter new member's name: "));
@@ -230,6 +241,9 @@ public class UserInterface {
 		}
 	}
 
+	/**
+	 * Remove a member from the coop
+	 */
 	public void removeMember() {
 		Request.instance().setMemberId(getStringInput("Enter ID of member to remove: "));
 		String memberId = Request.instance().getMemberId();
@@ -246,13 +260,11 @@ public class UserInterface {
 	}
 
 	/**
-	 * TODO
+	 * Get a member's information using their name for search
 	 */
 	public void retrieveMemberInfo() {
 		Request.instance().setMemberName(getStringInput("Enter the beginning of Members name: "));
-
 		Iterator<Result> results = grocery.retrieveMemberInfo(Request.instance());
-
 		if (!results.hasNext()) {
 			System.out.println("Unable to find any users that have a name starting with: '"
 					+ Request.instance().getMemberName() + "'");
@@ -261,7 +273,6 @@ public class UserInterface {
 		System.out.println("-- Members --");
 		while (results.hasNext()) {
 			Result result = results.next();
-
 			System.out.println("ID: " + result.getMemberId());
 			System.out.println("Name: " + result.getMemberName());
 			System.out.println("Address: " + result.getMemberAddress());
@@ -274,11 +285,10 @@ public class UserInterface {
 	}
 
 	/**
-	 * TODO
+	 * List all of the coop's members
 	 */
 	public void listMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
-
 		System.out.println("\n\t---Members---\n");
 		while (iterator.hasNext()) {
 			Result result = iterator.next();
@@ -312,11 +322,10 @@ public class UserInterface {
 			output += " Line: " + formatDollar(quantity * productPrice);
 			System.out.println(output);
 		}
-
 	}
 
 	/**
-	 * TODO
+	 * Print all of a member's transactions between two dates
 	 */
 	public void printTransactions() {
 		String memberId = getStringInput("Enter member id: ");
@@ -351,19 +360,15 @@ public class UserInterface {
 		System.out.println("--End of transactions--\n");
 	}
 
-
-
 	/**
-	 * Order Helpers TODO
+	 * Print all outstanding product orders
 	 */
 	private void listOutstandingOrders() {
 		Iterator<Result> orders = grocery.getOutstandingOrders();
-
 		if (!orders.hasNext()) {
 			System.out.println("There are no current outstanding orders.");
 			return;
 		}
-
 		System.out.println("--Orders--\n");
 		while (orders.hasNext()) {
 			Result result = orders.next();
@@ -377,7 +382,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * TODO
+	 * Process a product order shipment
 	 */
 	public void processShipment() {
 		Request instance = Request.instance();
@@ -402,7 +407,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * Product Helpers TODO
+	 * Print a product's information using it's name to find it
 	 */
 	public void retrieveProductInfo() {
 		String keyword = getStringInput("Enter beginning of product name: ");
@@ -438,27 +443,22 @@ public class UserInterface {
 		instance.setStockOnHand(getIntegerInput("Enter new product's current stock: "));
 		instance.setCurrentPrice(getDoubleInput("Enter new product's current price: "));
 		instance.setReorderLevel(getIntegerInput("Enter new product's reorder quantity: "));
-
 		Result result = grocery.addProduct(instance);
-
 		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
 			System.out.println("Product creation failed.");
 			return;
 		}
-
 		System.out.println("Succesfully created Product with ID " + instance.getProductId());
 	}
 
 	/**
-	 * TODO
+	 * Print all of the coop's products
 	 */
 	public void listProducts() {
 		Iterator<Result> results = grocery.getProducts();
-
 		if (!results.hasNext()) {
 			System.out.println("There are currently no products.");
 		}
-
 		System.out.println("--Products--\n");
 		while (results.hasNext()) {
 			Result result = results.next();
@@ -473,20 +473,19 @@ public class UserInterface {
 	}
 
 	/**
-	 * Transaction Helpers TODO
+	 * Helper function to create an addTransactionLineItem request instance
+	 * 
+	 * @return Request instance to be used with addTransactionLineItem
 	 */
-
 	private Request getCheckoutItemRequest() {
 		Request instance = Request.instance();
-
 		instance.setProductId(getStringInput("Enter product ID: "));
 		instance.setCheckoutQuantity(getIntegerInput("Enter quantity: "));
-
 		return instance;
 	}
 
 	/**
-	 * TODO
+	 * Checkout a member by creating a new transaction.
 	 */
 	private void checkout() {
 		/**
@@ -516,25 +515,20 @@ public class UserInterface {
 			Request checkoutItemRequest = getCheckoutItemRequest();
 			checkoutItemRequest.setTransactionId(transactionId);
 			Result lineItemResult = grocery.addTransactionLineItem(checkoutItemRequest);
-
 			if (lineItemResult.getResultCode() == Result.TRANSACTION_NOT_FOUND) {
 				System.out.println("There is no valid transaction with ID " + transactionId);
 			}
-
 			if (lineItemResult.getResultCode() == Result.PRODUCT_NOT_FOUND) {
 				System.out.println(
 						"There is no valid product with ID " + checkoutItemRequest.getProductId());
 			}
-
 			System.out.println("Line Total: " + formatDollar(lineItemResult.getLineTotal()));
 			System.out.println("Total Cost: " + formatDollar(lineItemResult.getCheckoutTotal()));
-
 			boolean shouldContinue = getYesOrNoInput("Add more items for checkout? (yes/no): ");
 			if (!shouldContinue) {
 				moreItems = false;
 			}
 		}
-
 		/**
 		 * Inform grocery to end the transaction with request object. Request object should contain
 		 * transaction id and member id. endTransaction() will add the transaction to the member's
@@ -544,19 +538,17 @@ public class UserInterface {
 		instance.setMemberId(memberId);
 		instance.setTransactionId(transactionId);
 		Result endTransactionResult = grocery.endTransaction(instance);
-
 		if (endTransactionResult.getResultCode() == Result.NO_SUCH_MEMBER) {
 			System.out.println("Failed to finalize transaction because member with ID " + memberId
 					+ " was not found.");
 			return;
 		}
-
 		System.out.println(
 				"Successfully completed transaction " + endTransactionResult.getTransactionId());
 	}
 
 	/**
-	 * This method change the product price by the given product id
+	 * Change a coop product's price
 	 */
 	private void changePrice() {
 		Request instance = Request.instance();
@@ -580,26 +572,27 @@ public class UserInterface {
 	}
 
 	/**
-	 * 
-	 * TODO give better names
+	 * Save all of the coop's data to be loaded later
 	 */
 	private void save() {
 		if (grocery.save()) {
-			System.out.println(" The current data has been successfully saved in the file GroceryyData \n");
+			System.out.println(
+					" The current data has been successfully saved in the file GroceryyData \n");
 		} else {
 			System.out.println(" There has been an error in saving \n");
 		}
 	}
 
 	/**
-	 * retrieve data helper
+	 * Load coop's serialized data
 	 */
 	private void retrieveData() {
 		try {
 			if (grocery == null) {
 				grocery = Grocery.retrieveData();
 				if (grocery != null) {
-					System.out.println(" The grocery has been successfully retrieved from the file GroceryData \n");
+					System.out.println(
+							" The grocery has been successfully retrieved from the file GroceryData \n");
 				} else {
 					System.out.println("File doesnt exist; creating new grocery");
 					grocery = Grocery.instance();
@@ -611,18 +604,14 @@ public class UserInterface {
 	}
 
 	/**
-	 * This method catches user inputs, and relies on getIntegerInput and
-	 * getFirstWordInput to process inputs
-	 * 
-	 * @param none
-	 * @return void
+	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
+	 * process inputs
 	 */
 	public void showUserInterface() {
 		System.out.println(showMenu());
 		boolean continueApplication = true;
 		while (continueApplication) {
 			try {
-
 				int userChoice = getIntegerInput("\nEnter a command (14 for help): ");
 				switch (userChoice) {
 					case (EXIT):
@@ -694,9 +683,9 @@ public class UserInterface {
 	}
 
 	/**
-	 * TODO
+	 * Main function
 	 * 
-	 * @param args
+	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
 		UserInterface.instance().showUserInterface();
