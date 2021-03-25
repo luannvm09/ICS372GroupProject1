@@ -44,8 +44,10 @@ public class UserInterface {
 	 * private constructor for singleton pattern
 	 */
 	private UserInterface() {
-		if(getYesOrNoInput("Look for saved data: (yes or no)")) {
+		if(getYesOrNoInput("Look for saved data: (yes or no):")) {
 			retrieveData();
+		}else if(getYesOrNoInput("Generate a test bed and invoke functionality?: (yes or no):")){
+			grocery = Grocery.autoTest();
 		}else {
 			grocery = Grocery.instance();
 		}

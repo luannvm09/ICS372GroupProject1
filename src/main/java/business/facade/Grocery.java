@@ -18,6 +18,7 @@ import business.entities.Product;
 import business.entities.Transaction;
 import business.entities.iterator.FilteredIterator;
 import business.entities.iterator.SafeIterator;
+import business.tests.AutomatedTester;
 
 public class Grocery implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -620,6 +621,15 @@ public class Grocery implements Serializable {
 			ioe.printStackTrace();
 			return false;
 		}
+	}
+	
+	/**
+	 * Invokes the AutomatedTest.
+	 * @return  grocery after applying test methods, includes test values.
+	 */
+	public static Grocery autoTest() {
+		new AutomatedTester().autoTest();
+        return Grocery.instance();
 	}
 }
 
