@@ -97,11 +97,7 @@ public class AutomatedTester {
 		int count = 0;
 		while (orderResults.hasNext()) {
 			Result orderResult = orderResults.next();
-			assert orderResult.getOrderProduct().getProductName().equals(productName[count]);
-			assert orderResult.getOrderProduct().getProductId().equals(ids[count]);
-			assert orderResult.getOrderProduct().getStockOnHand() == currentStock[count];
-			assert orderResult.getOrderProduct().getCurrentPrice() == currentPrice[count];
-			assert orderResult.getOrderProduct().getReorderLevel() == reorderQty[count];
+			assert orderResult.getOrderProduct().equals(products[count]);
 			count++;
 		}
 	}
