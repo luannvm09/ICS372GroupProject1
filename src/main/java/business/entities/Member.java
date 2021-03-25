@@ -11,22 +11,41 @@ import java.util.List;
 
 import business.entities.iterator.FilteredIterator;
 
+/**
+ * Member entity which represents a member of the coop. In addition to demographic information
+ * associated with the member, all of the member's transactions are stored as well.
+ */
 public class Member implements Serializable {
 	private static final long serialVersionUID = 1L;
+	/**
+	 * Member demographics/basic info
+	 */
 	private String memberId;
 	private String memberName;
 	private String memberAddress;
 	private String memberPhoneNumber;
 	private double feePaid;
 	private Calendar dateJoined;
+	// All of the transactions completed by this member
 	private List<Transaction> transactions = new LinkedList<Transaction>();
-
-	private static final String MEMBER_STRING = "M";
+	// "M" is prefixed to all generated member ids
+	private static final String MEMBER_ID_PREFIX = "M";
+	// Current id counter used to ensure unique ids for members
 	private static int idCounter;
 
+	/**
+	 * Member constructor. Generated a unique id for the member.
+	 * 
+	 * @param memberName        name of the member
+	 * @param memberAddress     address of the member
+	 * @param memberPhoneNumber phone number of the member
+	 * @param dateJoined        join date of the member
+	 * @param feePaid           the fee amount paid by the member
+	 */
 	public Member(String memberName, String memberAddress, String memberPhoneNumber,
 			Calendar dateJoined, double feePaid) {
-		this.memberId = MEMBER_STRING + ++idCounter;
+		// Prefix unique id with "M"
+		this.memberId = MEMBER_ID_PREFIX + ++idCounter;
 		this.memberName = memberName;
 		this.memberAddress = memberAddress;
 		this.memberPhoneNumber = memberPhoneNumber;
@@ -34,15 +53,23 @@ public class Member implements Serializable {
 		this.feePaid = feePaid;
 	}
 
+	/**
+	 * Associates a transaction with a member by adding a transaction to the transactions field
+	 * 
+	 * @param transaction transaction object to associate with member
+	 * @return true iff transaction was successfully added to transactions
+	 */
 	public boolean addNewUserTransaction(Transaction transaction) {
 		return this.transactions.add(transaction);
 	}
 
 	/**
-	 * Gets an iterator to a collection of selected transactions
+	 * Returns an iterator to a collection of selected transactions that was completed between a
+	 * start and end date
 	 * 
-	 * @param date the date for which the transactions have to be retrieved
-	 * @return the iterator to the collection
+	 * @param startDate the minimum date for range of acceptable dates
+	 * @param endDate   the maximum date for range of acceptable dates
+	 * @return An iterator of transactions that fall between [startDate, endDate]
 	 */
 	public Iterator<Transaction> getTransactionsOnDate(Calendar startDate, Calendar endDate) {
 		return new FilteredIterator<Transaction>(transactions.iterator(),
@@ -52,7 +79,7 @@ public class Member implements Serializable {
 	/**
 	 * Getter for memberId
 	 * 
-	 * @return member Id
+	 * @return the member id of the Member object
 	 */
 	public String getMemberId() {
 		return this.memberId;
@@ -61,7 +88,7 @@ public class Member implements Serializable {
 	/**
 	 * Getter for memberName
 	 * 
-	 * @return member name
+	 * @return the member name of the Member object
 	 */
 	public String getMemberName() {
 		return this.memberName;
@@ -70,7 +97,7 @@ public class Member implements Serializable {
 	/**
 	 * Getter for memberAddress
 	 * 
-	 * @return member address
+	 * @return the member address of the Member object
 	 */
 	public String getMemberAddress() {
 		return this.memberAddress;
@@ -79,7 +106,7 @@ public class Member implements Serializable {
 	/**
 	 * Getter for memberPhoneNumber
 	 * 
-	 * @return member phone number
+	 * @return the phone number of the Member object
 	 */
 	public String getMemberPhoneNumber() {
 		return this.memberPhoneNumber;
@@ -88,7 +115,7 @@ public class Member implements Serializable {
 	/**
 	 * Getter for dateJoined
 	 * 
-	 * @return member date joined
+	 * @return The Calendar object representing member join date
 	 */
 	public Calendar getDateJoined() {
 		return this.dateJoined;
@@ -97,14 +124,16 @@ public class Member implements Serializable {
 	/**
 	 * Getter for feePaid
 	 * 
-	 * @return member fee paid
+	 * @return Amount paid in membership fees
 	 */
 	public double getFeePaid() {
 		return this.feePaid;
 	}
 
 	/**
-	 * returns string representation of member object
+	 * toString method for Member
+	 * 
+	 * @return string representation of Member
 	 */
 	@Override
 	public String toString() {
@@ -117,7 +146,7 @@ public class Member implements Serializable {
 	 * all unique
 	 * 
 	 * @param none
-	 * @return int - unique hash code for each instance
+	 * @return unique hash code for each instance
 	 */
 	@Override
 	public int hashCode() {
@@ -132,7 +161,7 @@ public class Member implements Serializable {
 	 * the member ID and assumes that each member has a unique ID.
 	 * 
 	 * @param Object - the other member passed as object
-	 * @return boolean - true if member are equal, false if not
+	 * @return true if member are equal, false if not
 	 */
 	@Override
 	public boolean equals(Object object) {
@@ -157,13 +186,26 @@ public class Member implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Serializes the Member object using an ObjectOutputStream
+	 * 
+	 * @param output Stream used to serialize Member object
+	 * @throws IOException
+	 */
 	public static void save(ObjectOutputStream output) throws IOException {
 		output.writeObject(idCounter);
 	}
 
+	/**
+	 * Retrieve serialized Member idCounter and assign to current member count to ensure unique ids
+	 * for newly created members
+	 * 
+	 * @param input Input stream used to deserialize the Member static idCounter
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public static void retrieve(ObjectInputStream input)
 			throws IOException, ClassNotFoundException {
 		Member.idCounter = (int) input.readObject();
 	}
-
 }
