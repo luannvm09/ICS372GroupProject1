@@ -44,11 +44,12 @@ public class UserInterface {
 	 * private constructor for singleton pattern
 	 */
 	private UserInterface() {
-		if(getYesOrNoInput("Look for saved data: (yes or no):")) {
+		if (getYesOrNoInput("Look for saved data: (yes or no): ")) {
 			retrieveData();
-		}else if(getYesOrNoInput("Generate a test bed and invoke functionality?: (yes or no):")){
+		} else if (getYesOrNoInput(
+				"Generate a test bed and invoke functionality?: (yes or no): ")) {
 			grocery = Grocery.autoTest();
-		}else {
+		} else {
 			grocery = Grocery.instance();
 		}
 	}
@@ -74,11 +75,11 @@ public class UserInterface {
 		String menu = "Make a selection, enter: \n" + ADD_MEMBER + ") Enroll a member\n"
 				+ REMOVE_MEMBER + ") Remove a member\n" + ADD_PRODUCT + ") Add a product\n"
 				+ CHECKOUT + ") Check out a member's items\n" + PROCESS_SHIPMENT
-				+ ") Process a shipment\n" + CHANGE_PRICE
-				+ ") Change the price of a product\n" + RETRIEVE_PRODUCT_INFO + ") Retrieve product info\n"
-				+ RETRIEVE_MEMBER_INFO + ") Retrieve member info\n" + PRINT_TRANSACTIONS
-				+ ") Print transactions\n" + LIST_OUTSTANDING_ORDERS + ") List all outstanding orders\n"
-				+ LIST_MEMBERS + ") List all members with member info\n" + LIST_PRODUCTS
+				+ ") Process a shipment\n" + CHANGE_PRICE + ") Change the price of a product\n"
+				+ RETRIEVE_PRODUCT_INFO + ") Retrieve product info\n" + RETRIEVE_MEMBER_INFO
+				+ ") Retrieve member info\n" + PRINT_TRANSACTIONS + ") Print transactions\n"
+				+ LIST_OUTSTANDING_ORDERS + ") List all outstanding orders\n" + LIST_MEMBERS
+				+ ") List all members with member info\n" + LIST_PRODUCTS
 				+ ") List all products with product info\n" + SAVE + ") Save\n" + HELP + ") Help \n"
 				+ "Press " + EXIT + " at any time to quit the application";
 		return menu;
@@ -122,8 +123,7 @@ public class UserInterface {
 	}
 
 	/**
-	 * A method to get an Int value from user input to be used in
-	 * for making a command
+	 * A method to get an Int value from user input to be used in for making a command
 	 * 
 	 * @param message
 	 * @return int value from String input
@@ -144,6 +144,7 @@ public class UserInterface {
 	/**
 	 * 
 	 * Method to get user inputs in form of a double
+	 * 
 	 * @param message
 	 * @return
 	 */
@@ -199,18 +200,19 @@ public class UserInterface {
 		output += calendar.get(Calendar.YEAR);
 		return output;
 	}
-	
+
 	/**
 	 * method to format dollar amounts
-	 * @param amount  amount in dollar to format
-	 * @return  the proper format in the form of a string
+	 * 
+	 * @param amount amount in dollar to format
+	 * @return the proper format in the form of a string
 	 */
 	private String formatDollar(double amount) {
 		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance();
 		String output = dollarFormat.format(amount);
 		return output;
 	}
-	
+
 	/**
 	 * Member Helpers
 	 */
@@ -226,7 +228,7 @@ public class UserInterface {
 		} else {
 			System.out.println(result.getMemberName() + "'s id is " + result.getMemberId());
 		}
-	}	
+	}
 
 	public void removeMember() {
 		Request.instance().setMemberId(getStringInput("Enter ID of member to remove: "));
@@ -270,13 +272,13 @@ public class UserInterface {
 			System.out.println();
 		}
 	}
-	
+
 	/**
 	 * TODO
 	 */
 	public void listMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
-		
+
 		System.out.println("\n\t---Members---\n");
 		while (iterator.hasNext()) {
 			Result result = iterator.next();
@@ -343,7 +345,8 @@ public class UserInterface {
 			System.out.println("ID: " + result.getTransactionId());
 			System.out.println("Date: " + formatCalendar(result.getTransactionDate()));
 			printTransactionLineItems(result.getLineItems());
-			System.out.println("Total Transaction Cost: " + formatDollar(result.getCheckoutTotal()) + "\n");
+			System.out.println(
+					"Total Transaction Cost: " + formatDollar(result.getCheckoutTotal()) + "\n");
 		}
 		System.out.println("--End of transactions--\n");
 	}
@@ -575,7 +578,7 @@ public class UserInterface {
 				+ formatDollar(priceChangeResult.getCurrentPrice()));
 		return;
 	}
-	
+
 	/**
 	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
 	 * process inputs
@@ -658,7 +661,7 @@ public class UserInterface {
 			}
 		}
 	}
-	
+
 	/**
 	 * retrieve data helper
 	 */
@@ -667,7 +670,8 @@ public class UserInterface {
 			if (grocery == null) {
 				grocery = Grocery.retrieveData();
 				if (grocery != null) {
-					System.out.println(" The grocery has been successfully retrieved from the file GroceryData \n");
+					System.out.println(
+							" The grocery has been successfully retrieved from the file GroceryData \n");
 				} else {
 					System.out.println("File doesnt exist; creating new grocery");
 					grocery = Grocery.instance();
@@ -677,20 +681,23 @@ public class UserInterface {
 			cnfe.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * TODO give better names
 	 */
-    private void save() {
-        if (grocery.save()) {
-            System.out.println(" The current data has been successfully saved in the file GroceryyData \n");
-        } else {
-            System.out.println(" There has been an error in saving \n");
-        }
-    }
+	private void save() {
+		if (grocery.save()) {
+			System.out.println(
+					" The current data has been successfully saved in the file GroceryyData \n");
+		} else {
+			System.out.println(" There has been an error in saving \n");
+		}
+	}
+
 	/**
 	 * TODO
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
