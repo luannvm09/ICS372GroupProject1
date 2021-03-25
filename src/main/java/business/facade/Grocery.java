@@ -335,8 +335,7 @@ public class Grocery implements Serializable {
 	 * @return an iterator of members whose name start with specified string
 	 */
 	public Iterator<Result> retrieveMemberInfo(Request request) {
-		Iterator<Member> filteredMembers =
-				this.members.retrieveMemberInfo(request.getMemberName());
+		Iterator<Member> filteredMembers = this.members.retrieveMemberInfo(request.getMemberName());
 
 		return new SafeIterator<Member>(filteredMembers, SafeIterator.MEMBER);
 	}
@@ -467,21 +466,27 @@ public class Grocery implements Serializable {
 		// Order no longer outstanding, remove from orders
 		this.orders.removeOrder(orderId);
 		result.setProductFields(product);
+		result.setResultCode(Result.OPERATION_COMPLETED);
 		return result;
 	}
 
 	/**
 	 * Transaction Helpers
 	 */
+
+	/**
+	 * Add a LineItem to a transaction.
+	 * 
+	 * @param request
+	 * @return Result contains line total for the new LineItem and the current transaction total
+	 */
 	public Result addTransactionLineItem(Request request) {
 		Result result = new Result();
-
 		String transactionId = request.getTransactionId();
 		String productId = request.getProductId();
 		int checkoutQuantity = request.getCheckoutQuantity();
 		Transaction currentTransaction = this.transactions.getTransactionById(transactionId);
 		Product currentProduct = this.stock.search(productId);
-		double lineTotal = currentProduct.getCurrentPrice() * checkoutQuantity;
 
 		if (currentTransaction == null) {
 			result.setResultCode(Result.TRANSACTION_NOT_FOUND);
@@ -493,6 +498,7 @@ public class Grocery implements Serializable {
 			return result;
 		}
 
+		double lineTotal = currentProduct.getCurrentPrice() * checkoutQuantity;
 		currentTransaction.addLineItem(currentProduct, checkoutQuantity);
 		double checkoutCost = currentTransaction.getTotalCost();
 		result.setResultCode(Result.OPERATION_COMPLETED);
@@ -504,7 +510,7 @@ public class Grocery implements Serializable {
 	/**
 	 * Creates a new transaction and returns the id of the new transaction to caller.
 	 * 
-	 * @return
+	 * @return Result containing transaction id for the created transaction
 	 */
 	public Result beginTransaction() {
 		Transaction createdTransaction = new Transaction();
@@ -582,7 +588,7 @@ public class Grocery implements Serializable {
 		result.setProductFields(product);
 		return result;
 	}
-	
+
 	/**
 	 * method to retrieve a previous values
 	 */
@@ -598,12 +604,12 @@ public class Grocery implements Serializable {
 		} catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
 			return null;
-		}catch(IOException ioe) {
+		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Method to save data from
 	 */
@@ -617,19 +623,20 @@ public class Grocery implements Serializable {
 			Transaction.save(outputStream);
 			dataFile.close();
 			return true;
-		}catch(IOException ioe) {
+		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Invokes the AutomatedTest.
-	 * @return  grocery after applying test methods, includes test values.
+	 * 
+	 * @return grocery after applying test methods, includes test values.
 	 */
 	public static Grocery autoTest() {
 		new AutomatedTester().autoTest();
-        return Grocery.instance();
+		return Grocery.instance();
 	}
 }
 
