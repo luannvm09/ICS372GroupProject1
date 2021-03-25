@@ -2,9 +2,14 @@ package business.facade;
 
 import java.util.Calendar;
 
+/**
+ * Subclass of DataTransfer that represents a request sent from UI to Grocery instance. Follows
+ * singleton pattern.
+ */
 public class Request extends DataTransfer {
+	// singleton static instance
 	private static Request request = null;
-	private int stockOnHand;
+	// dates used in filtering member transactions
 	private Calendar startDate;
 	private Calendar endDate;
 
@@ -27,29 +32,40 @@ public class Request extends DataTransfer {
 		return Request.request;
 	}
 
-	public int getStockOnHand() {
-		return this.stockOnHand;
-	}
 
-	public void setStockOnHand(int stockOnHand) {
-		this.stockOnHand = stockOnHand;
-	}
-
+	/**
+	 * Getter for startDate
+	 * 
+	 * @return start date for filtering member transactions
+	 */
 	public Calendar getStartDate() {
 		return this.startDate;
 	}
 
+	/**
+	 * Getter for endDate
+	 * 
+	 * @return end date for filtering member transactions
+	 */
 	public Calendar getEndDate() {
 		return this.endDate;
 	}
 
+	/**
+	 * Setter for startDate
+	 * 
+	 * @param startDate earliest date for filtering member transactions
+	 */
 	public void setStartDate(Calendar startDate) {
 		this.startDate = startDate;
-
 	}
 
+	/**
+	 * Setter for endDate
+	 * 
+	 * @param endDate latest date for filtering member transactions
+	 */
 	public void setEndDate(Calendar endDate) {
 		this.endDate = endDate;
-
 	}
 }
