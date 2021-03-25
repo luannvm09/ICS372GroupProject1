@@ -198,9 +198,14 @@ public class UserInterface {
 		return output;
 	}
 	
+	/**
+	 * method to format dollar amounts
+	 * @param amount  amount in dollar to format
+	 * @return  the proper format in the form of a string
+	 */
 	private String formatDollar(double amount) {
-		NumberFormat formatter = NumberFormat.getCurrencyInstance();
-		String output = formatter.format(amount);
+		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance();
+		String output = dollarFormat.format(amount);
 		return output;
 	}
 	
