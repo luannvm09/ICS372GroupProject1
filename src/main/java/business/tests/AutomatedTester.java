@@ -1,7 +1,5 @@
 package business.tests;
 
-
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -14,6 +12,9 @@ import business.facade.Grocery;
 import business.facade.Request;
 import business.facade.Result;
 
+/**
+ * Tester class which manages and runs tests of grocery methods
+ */
 public class AutomatedTester {
 	private final Grocery grocery = Grocery.instance();
 	private final String[] names = {"n1", "n2", "n3", "n4", "n5", "n6", "n7"};
@@ -25,7 +26,7 @@ public class AutomatedTester {
 			{"i1", "i2", "i3", "i4", "i5", "i6", "i7", "i8", "i9", "i10", "i11", "i12", "i13",
 					"i14", "i15", "i16", "i17", "i18", "i19", "i20", "i21", "i22", "i23"};
 	private final String[] productName =
-			{ "pro1", "prod2", "pro3", "product4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12",
+			{"pro1", "prod2", "pro3", "product4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12",
 					"p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23"};
 	private final int[] currentStock = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 19, 18,
 			17, 16, 15, 14, 13, 12, 11};
@@ -38,7 +39,7 @@ public class AutomatedTester {
 	private final Random random = new Random();
 
 	/**
-	 * Tests addMember function.
+	 * Create members and assert that they were created correctly.
 	 */
 	public void testAddMember() {
 		for (int count = 0; count < members.length; count++) {
@@ -57,7 +58,7 @@ public class AutomatedTester {
 	}
 
 	/**
-	 * Tests removeMember function.
+	 * Assert that remove member correctly removes members
 	 */
 	public void testRemoveMember() {
 		Request.instance().setMemberId("M8");
@@ -200,7 +201,6 @@ public class AutomatedTester {
 			Result productResult = productResults.next();
 			productIds.add(productResult.getProductId());
 		}
-
 		// Change a random number of product's prices
 		int numberOfChanges = getRandomInt(1, 50);
 		for (int changeNumber = 0; changeNumber < numberOfChanges; changeNumber++) {
