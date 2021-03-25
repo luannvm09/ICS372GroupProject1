@@ -580,8 +580,39 @@ public class UserInterface {
 	}
 
 	/**
-	 * This method catches user inputs, and relies on getIntegerInput and getFirstWordInput to
-	 * process inputs
+	 * 
+	 * TODO give better names
+	 */
+	private void save() {
+		if (grocery.save()) {
+			System.out.println(" The current data has been successfully saved in the file GroceryyData \n");
+		} else {
+			System.out.println(" There has been an error in saving \n");
+		}
+	}
+
+	/**
+	 * retrieve data helper
+	 */
+	private void retrieveData() {
+		try {
+			if (grocery == null) {
+				grocery = Grocery.retrieveData();
+				if (grocery != null) {
+					System.out.println(" The grocery has been successfully retrieved from the file GroceryData \n");
+				} else {
+					System.out.println("File doesnt exist; creating new grocery");
+					grocery = Grocery.instance();
+				}
+			}
+		} catch (Exception cnfe) {
+			cnfe.printStackTrace();
+		}
+	}
+
+	/**
+	 * This method catches user inputs, and relies on getIntegerInput and
+	 * getFirstWordInput to process inputs
 	 * 
 	 * @param none
 	 * @return void
@@ -659,39 +690,6 @@ public class UserInterface {
 				System.out.println("Unexpected Error. Restart Program.");
 				System.exit(0);
 			}
-		}
-	}
-
-	/**
-	 * retrieve data helper
-	 */
-	private void retrieveData() {
-		try {
-			if (grocery == null) {
-				grocery = Grocery.retrieveData();
-				if (grocery != null) {
-					System.out.println(
-							" The grocery has been successfully retrieved from the file GroceryData \n");
-				} else {
-					System.out.println("File doesnt exist; creating new grocery");
-					grocery = Grocery.instance();
-				}
-			}
-		} catch (Exception cnfe) {
-			cnfe.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * TODO give better names
-	 */
-	private void save() {
-		if (grocery.save()) {
-			System.out.println(
-					" The current data has been successfully saved in the file GroceryyData \n");
-		} else {
-			System.out.println(" There has been an error in saving \n");
 		}
 	}
 
