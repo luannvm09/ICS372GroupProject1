@@ -2,20 +2,25 @@ package business.entities;
 
 import java.io.Serializable;
 
-// FIXME this is the beginning of the Product class, the product id needs to be unique,
-// I'm not sure if we wanted to implement that in the GroceryStore Facade, or here in Product
-// I've written some classes like hashCode() and equals() based on the assumption that product's ID
-// will be unique. Change!
+/**
+ * Product class which represents a product in the coop's inventory. New products are given a user
+ * provided id and are not automatically generated.
+ */
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
+	// Name of product
 	private String productName;
+	// Id of product
 	private String productId;
+	// Quantity of product in stock
 	private int stockOnHand;
+	// The quantity that triggers a reorder if stock is equal or less than this value
 	private int reorderLevel;
+	// Current price of product
 	private double currentPrice;
 
 	/**
-	 * The constructor for product will take the name,
+	 * Constructor. Assigns instance variable to constructor parameters.
 	 * 
 	 * @param name
 	 * @param reorderLevel
@@ -30,44 +35,74 @@ public class Product implements Serializable {
 	}
 
 	/**
-	 * Getters and Setters
+	 * Getter for product name
+	 * 
+	 * @return name of the product
 	 */
 	public String getProductName() {
 		return this.productName;
 	}
 
+	/**
+	 * Getter for product id
+	 * 
+	 * @return id of product
+	 */
 	public String getProductId() {
 		return this.productId;
 	}
 
+	/**
+	 * Getter for stockOnHand
+	 * 
+	 * @return current stock of product
+	 */
 	public int getStockOnHand() {
 		return this.stockOnHand;
 	}
 
+	/**
+	 * Setter for stockOnHand
+	 * 
+	 * @param stockOnHand new current stock for product
+	 */
 	public void setStockOnHand(int stockOnHand) {
 		this.stockOnHand = stockOnHand;
 	}
 
+	/**
+	 * Getter for reorderLevel
+	 * 
+	 * @return reorder quantity for product
+	 */
 	public int getReorderLevel() {
 		return this.reorderLevel;
 	}
 
+	/**
+	 * Getter for currentPrice
+	 * 
+	 * @return current price of product
+	 */
 	public double getCurrentPrice() {
 		return this.currentPrice;
 	}
 
+	/**
+	 * Setter for currentPrice
+	 * 
+	 * @param currentPrice new price for product
+	 */
 	public void setCurrentPrice(double currentPrice) {
 		this.currentPrice = currentPrice;
 	}
-	
-	
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the products ID's are
 	 * all unique
 	 * 
 	 * @param none
-	 * @return int - unique hash code for each instance
+	 * @return unique hash code for each instance
 	 */
 	@Override
 	public int hashCode() {
@@ -82,7 +117,7 @@ public class Product implements Serializable {
 	 * the product ID and assumes that each product has a unique ID.
 	 * 
 	 * @param Object - the other book passed as object
-	 * @return boolean - true if books are equal, false if not
+	 * @return true if books are equal, false if not
 	 */
 	@Override
 	public boolean equals(Object object) {
@@ -108,7 +143,9 @@ public class Product implements Serializable {
 	}
 
 	/**
-	 * returns string representation of product object
+	 * Product toString method
+	 * 
+	 * @return string representation of Product
 	 */
 	@Override
 	public String toString() {
