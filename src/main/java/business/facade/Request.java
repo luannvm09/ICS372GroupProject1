@@ -5,7 +5,6 @@ import java.util.Calendar;
 public class Request extends DataTransfer {
 	private static Request request = null;
 	private int stockOnHand;
-	private Calendar date;
 	private Calendar startDate;
 	private Calendar endDate;
 
@@ -36,20 +35,12 @@ public class Request extends DataTransfer {
 		this.stockOnHand = stockOnHand;
 	}
 
-	public Calendar getDate() {
-		return this.date;
-	}
-
 	public Calendar getStartDate() {
 		return this.startDate;
 	}
 
 	public Calendar getEndDate() {
 		return this.endDate;
-	}
-
-	public void setDate(Calendar date) {
-		this.date = date;
 	}
 
 	public void setStartDate(Calendar startDate) {

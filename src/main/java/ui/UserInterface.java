@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+
 import business.entities.LineItem;
 import business.facade.Grocery;
 import business.facade.Request;
@@ -28,11 +29,11 @@ public class UserInterface {
 	private static final int ADD_PRODUCT = 3;
 	private static final int CHECKOUT = 4;
 	private static final int PROCESS_SHIPMENT = 5;
-	private static final int CHANGE_PRODUCT_PRICE = 6;
-	private static final int PRODUCT_INFO = 7;
-	private static final int MEMBER_INFO = 8;
+	private static final int CHANGE_PRICE = 6;
+	private static final int RETRIEVE_PRODUCT_INFO = 7;
+	private static final int RETRIEVE_MEMBER_INFO = 8;
 	private static final int PRINT_TRANSACTIONS = 9;
-	private static final int OUTSTANDING_ORDERS = 10;
+	private static final int LIST_OUTSTANDING_ORDERS = 10;
 	private static final int LIST_MEMBERS = 11;
 	private static final int LIST_PRODUCTS = 12;
 	private static final int SAVE = 13;
@@ -70,10 +71,10 @@ public class UserInterface {
 		String menu = "Make a selection, enter: \n" + ADD_MEMBER + ") Enroll a member\n"
 				+ REMOVE_MEMBER + ") Remove a member\n" + ADD_PRODUCT + ") Add a product\n"
 				+ CHECKOUT + ") Check out a member's items\n" + PROCESS_SHIPMENT
-				+ ") Process a shipment\n" + CHANGE_PRODUCT_PRICE
-				+ ") Change the price of a product\n" + PRODUCT_INFO + ") Retrieve product info\n"
-				+ MEMBER_INFO + ") Retrieve member info\n" + PRINT_TRANSACTIONS
-				+ ") Print transactions\n" + OUTSTANDING_ORDERS + ") List all outstanding orders\n"
+				+ ") Process a shipment\n" + CHANGE_PRICE
+				+ ") Change the price of a product\n" + RETRIEVE_PRODUCT_INFO + ") Retrieve product info\n"
+				+ RETRIEVE_MEMBER_INFO + ") Retrieve member info\n" + PRINT_TRANSACTIONS
+				+ ") Print transactions\n" + LIST_OUTSTANDING_ORDERS + ") List all outstanding orders\n"
 				+ LIST_MEMBERS + ") List all members with member info\n" + LIST_PRODUCTS
 				+ ") List all products with product info\n" + SAVE + ") Save\n" + HELP + ") Help \n"
 				+ "Press " + EXIT + " at any time to quit the application";
@@ -216,7 +217,7 @@ public class UserInterface {
 	public void removeMember() {
 		Request.instance().setMemberId(getStringInput("Enter ID of member to remove: "));
 		String memberId = Request.instance().getMemberId();
-		Result result = grocery.removeMemberByID(Request.instance());
+		Result result = grocery.removeMember(Request.instance());
 
 		if (result.getResultCode() == Result.NO_SUCH_MEMBER) {
 			System.out.println("Failed to remove member with ID " + memberId);
@@ -234,7 +235,7 @@ public class UserInterface {
 	public void retrieveMemberInfo() {
 		Request.instance().setMemberName(getStringInput("Enter the beginning of Members name: "));
 
-		Iterator<Result> results = grocery.retrieveMembersByName(Request.instance());
+		Iterator<Result> results = grocery.retrieveMemberInfo(Request.instance());
 
 		if (!results.hasNext()) {
 			System.out.println("Unable to find any users that have a name starting with: '"
@@ -259,7 +260,7 @@ public class UserInterface {
 	/**
 	 * TODO
 	 */
-	public void printMembers() {
+	public void listMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
 
 		while (iterator.hasNext()) {
@@ -300,11 +301,11 @@ public class UserInterface {
 	/**
 	 * TODO
 	 */
-	public void getMembersTransactions() {
+	public void printTransactions() {
 		String memberId = getStringInput("Enter member id: ");
 		// Check and make sure member even exists first.
 		Request.instance().setMemberId(memberId);
-		Result checkMemberIdResult = grocery.retrieveMemberById(Request.instance());
+		Result checkMemberIdResult = grocery.searchMembership(Request.instance());
 		if (checkMemberIdResult.getResultCode() == Result.NO_SUCH_MEMBER) {
 			System.out.println("Member with ID " + memberId + " does not exist.");
 			return;
@@ -330,18 +331,6 @@ public class UserInterface {
 			System.out.println("Total Transaction Cost: $" + result.getCheckoutTotal() + "\n");
 		}
 		System.out.println("--End of transactions--\n");
-	}
-
-	/**
-	 * TODO
-	 */
-	public void findMemberByName() {
-		Request.instance().setMemberName(getStringInput("Enter beginning of member name: "));
-		Iterator<Result> members = grocery.retrieveMembersByName(Request.instance());
-		while (members.hasNext()) {
-			Result result = members.next();
-			System.out.println(result.getMemberId() + ": " + result.getMemberName());
-		}
 	}
 
 	/**
@@ -395,10 +384,10 @@ public class UserInterface {
 	/**
 	 * Product Helpers TODO
 	 */
-	public void retrieveProductsByName() {
+	public void retrieveProductInfo() {
 		String keyword = getStringInput("Enter beginning of product name: ");
 		Request.instance().setProductName(keyword);
-		Iterator<Result> results = grocery.retrieveProductsByName(Request.instance());
+		Iterator<Result> results = grocery.retrieveProductInfo(Request.instance());
 		// Check if there are no results
 		if (!results.hasNext()) {
 			System.out.println("\nUnable to find any products beginning with '" + keyword + "'.");
@@ -443,8 +432,8 @@ public class UserInterface {
 	/**
 	 * TODO
 	 */
-	public void printProducts() {
-		Iterator<Result> results = grocery.retrieveAllProducts();
+	public void listProducts() {
+		Iterator<Result> results = grocery.getProducts();
 
 		if (!results.hasNext()) {
 			System.out.println("There are currently no products.");
@@ -485,7 +474,7 @@ public class UserInterface {
 		 */
 		String memberId = getStringInput("Enter member's ID: ");
 		Request.instance().setMemberId(memberId);
-		Result searchResults = grocery.retrieveMemberById(Request.instance());
+		Result searchResults = grocery.searchMembership(Request.instance());
 		if (searchResults.getResultCode() != Result.OPERATION_COMPLETED) {
 			System.out.println("There is no member with ID " + memberId);
 			return;
@@ -549,18 +538,18 @@ public class UserInterface {
 	/**
 	 * This method change the product price by the given product id
 	 */
-	private void changeProductPrice() {
+	private void changePrice() {
 		Request instance = Request.instance();
 		String productId = getStringInput("Enter product's ID: ");
 		instance.setProductId(productId);
-		Result productSearchResult = grocery.retrieveProductsById(instance);
+		Result productSearchResult = grocery.searchProduct(instance);
 		if (productSearchResult.getResultCode() == Result.PRODUCT_NOT_FOUND) {
 			System.out.println("There is no product with ID " + productId);
 			return;
 		}
 		double newPrice = getDoubleInput("Enter the new price: ");
 		instance.setCurrentPrice(newPrice);
-		Result priceChangeResult = grocery.updateProductPrice(instance);
+		Result priceChangeResult = grocery.changePrice(instance);
 		if (priceChangeResult.getResultCode() != Result.OPERATION_COMPLETED) {
 			System.out.println("Failed to update product price.");
 			return;
@@ -593,7 +582,7 @@ public class UserInterface {
 						// enroll a member
 						break;
 					case (REMOVE_MEMBER):
-						// remmove a member
+						// remove a member
 						removeMember();
 						break;
 					case (ADD_PRODUCT):
@@ -608,37 +597,37 @@ public class UserInterface {
 						// process a shipment
 						processShipment();
 						break;
-					case (CHANGE_PRODUCT_PRICE):
+					case (CHANGE_PRICE):
 						// change product price
-						changeProductPrice();
+						changePrice();
 						break;
-					case (PRODUCT_INFO):
+					case (RETRIEVE_PRODUCT_INFO):
 						// get products starting with keyword
-						retrieveProductsByName();
+						retrieveProductInfo();
 						break;
-					case (MEMBER_INFO):
+					case (RETRIEVE_MEMBER_INFO):
 						// retrieve member info
 						retrieveMemberInfo();
 						break;
 					case (PRINT_TRANSACTIONS):
-						getMembersTransactions();
+						printTransactions();
 						// print transactions
 						break;
-					case (OUTSTANDING_ORDERS):
+					case (LIST_OUTSTANDING_ORDERS):
 						// list outstanding orders
 						listOutstandingOrders();
 						break;
 					case (LIST_PRODUCTS):
 						// list member and member info
-						printProducts();
+						listProducts();
 						break;
 					case (LIST_MEMBERS):
 						// list prods and prod info
-						printMembers();
+						listMembers();
 						break;
 					case (SAVE):
 						// save
-						saveData();
+						save();
 						break;
 					case (HELP):
 						System.out.println(showMenu());
@@ -676,8 +665,8 @@ public class UserInterface {
 	 * 
 	 * TODO give better names
 	 */
-    private void saveData() {
-        if (grocery.saveData()) {
+    private void save() {
+        if (grocery.save()) {
             System.out.println(" The current data has been successfully saved in the file GroceryyData \n");
         } else {
             System.out.println(" There has been an error in saving \n");

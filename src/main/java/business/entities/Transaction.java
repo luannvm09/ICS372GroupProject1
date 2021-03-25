@@ -104,15 +104,6 @@ public class Transaction implements Serializable {
 		return date.get(Calendar.MONTH) + "/" + date.get(Calendar.DATE) + "/"
 				+ date.get(Calendar.YEAR);
 	}
-
-	/**
-	 * String form of the transaction
-	 * 
-	 */
-	@Override
-	public String toString() {
-		return (this.transactionId + ": " + this.lineItems.size() + " Items in transaction");
-	}
 	
 	/**
 	 * method to retrieve data

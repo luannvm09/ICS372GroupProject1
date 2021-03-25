@@ -36,16 +36,8 @@ public class Product implements Serializable {
 		return this.productName;
 	}
 
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
 	public String getProductId() {
 		return this.productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
 	}
 
 	public int getStockOnHand() {
@@ -66,16 +58,6 @@ public class Product implements Serializable {
 
 	public void setCurrentPrice(double currentPrice) {
 		this.currentPrice = currentPrice;
-	}
-
-	/**
-	 * returns string representation of product object
-	 */
-	@Override
-	public String toString() {
-		return "Product name " + this.productName + "; id " + this.productId + "; stock on hand "
-				+ this.stockOnHand + "; price $ " + this.currentPrice + "; reorder level "
-				+ this.reorderLevel;
 	}
 
 	/**

@@ -68,30 +68,12 @@ public class Member implements Serializable {
 	}
 
 	/**
-	 * Setter for name
-	 * 
-	 * @param newMemberName member's new name
-	 */
-	public void setMemberName(String newMemberName) {
-		this.memberName = newMemberName;
-	}
-
-	/**
 	 * Getter for memberAddress
 	 * 
 	 * @return member address
 	 */
 	public String getMemberAddress() {
 		return this.memberAddress;
-	}
-
-	/**
-	 * Setter for memberAddress
-	 * 
-	 * @param newMemberAddress member's new address
-	 */
-	public void setMemberAddress(String newMemberAddress) {
-		this.memberAddress = newMemberAddress;
 	}
 
 	/**
@@ -104,30 +86,12 @@ public class Member implements Serializable {
 	}
 
 	/**
-	 * Setter for Phone Number
-	 * 
-	 * @param newMemberPhoneNumber member's new phone number
-	 */
-	public void setMemberPhoneNumber(String newMemberPhoneNumber) {
-		this.memberPhoneNumber = newMemberPhoneNumber;
-	}
-
-	/**
 	 * Getter for dateJoined
 	 * 
 	 * @return member date joined
 	 */
 	public Calendar getDateJoined() {
 		return this.dateJoined;
-	}
-
-	/**
-	 * Setter for dateJoined
-	 * 
-	 * @param newDateJoined member's new date joined
-	 */
-	public void setDateJoined(Calendar dateJoined) {
-		this.dateJoined = dateJoined;
 	}
 
 	/**
@@ -139,34 +103,6 @@ public class Member implements Serializable {
 		return this.feePaid;
 	}
 
-	/**
-	 * Setter for feePaid
-	 * 
-	 * @param newFeePaid member's new fee paid
-	 */
-	public void setFeePaid(Double feePaid) {
-		this.feePaid = feePaid;
-	}
-
-
-	/**
-	 * a way of representing member different from toString
-	 * 
-	 * @return string representation of member object
-	 */
-	public String output() {
-		return "Member id " + this.memberId + "; address " + this.memberAddress + "; fee paid $"
-				+ this.feePaid;
-	}
-
-	/**
-	 * returns string representation of member object
-	 */
-	@Override
-	public String toString() {
-		return "Member name " + this.memberName + "; date joined " + this.dateJoined + "; address "
-				+ this.memberAddress + "; phone number " + this.memberPhoneNumber;
-	}
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the members ID's are
