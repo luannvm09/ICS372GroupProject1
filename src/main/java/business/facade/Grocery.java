@@ -544,13 +544,13 @@ public class Grocery implements Serializable {
 		// Add the transaction to member
 		member.addNewUserTransaction(transaction);
 		// Make any necessary orders for stock that hits reorder level
-		this.verifyStock(transaction);
+		this.updateStock(transaction);
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		result.setTransactionFields(transaction);
 		return result;
 	}
 
-	private void verifyStock(Transaction transaction) {
+	private void updateStock(Transaction transaction) {
 		List<LineItem> lineItems = transaction.getLineItems();
 		Iterator<LineItem> iterator = lineItems.iterator();
 
@@ -560,11 +560,19 @@ public class Grocery implements Serializable {
 			int lineItemQuantity = lineItem.getQuantity();
 			int stockOnHand = product.getStockOnHand();
 			int reorderLevel = product.getReorderLevel();
+			int newStockOnHand = stockOnHand - lineItemQuantity;
+			product.setStockOnHand(newStockOnHand);
 			// If quantity in stock is less than or equal to reorder level, create new order
-			if (stockOnHand - lineItemQuantity <= reorderLevel) {
+			if (newStockOnHand <= reorderLevel) {
 				int orderQuantity = reorderLevel * 2;
 				Order restockOrder = new Order(product, orderQuantity, Calendar.getInstance());
 				this.orders.addOrder(restockOrder);
+				// Print a message informing user that a restock order was created
+				System.out.println("\nCreating restock order for " + product.getProductName());
+				System.out.println("Order:");
+				System.out.println(" - Order ID: " + restockOrder.getOrderId());
+				System.out.println(" - Order Quantity: " + restockOrder.getQuantity());
+				System.out.println(" - Order Product: " + product.getProductName());
 			}
 		}
 		return;
