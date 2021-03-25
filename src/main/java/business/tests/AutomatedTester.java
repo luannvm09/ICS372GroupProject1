@@ -91,7 +91,7 @@ public class AutomatedTester {
 	/**
 	 * Invokes all the test methods.
 	 */
-	public void testAll() {
+	public void autoTest() {
 		testAddMember();
 		testRemoveMember();
 		testAddProduct();

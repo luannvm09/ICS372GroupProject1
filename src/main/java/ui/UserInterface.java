@@ -47,7 +47,7 @@ public class UserInterface {
 		if(getYesOrNoInput("Look for saved data: (yes or no):")) {
 			retrieveData();
 		}else if(getYesOrNoInput("Generate a test bed and invoke functionality?: (yes or no):")){
-			//code to be written here
+			grocery = Grocery.autoTest();
 		}else {
 			grocery = Grocery.instance();
 		}
