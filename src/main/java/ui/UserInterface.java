@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -196,7 +197,18 @@ public class UserInterface {
 		output += calendar.get(Calendar.YEAR);
 		return output;
 	}
-
+	
+	/**
+	 * method to format dollar amounts
+	 * @param amount  amount in dollar to format
+	 * @return  the proper format in the form of a string
+	 */
+	private String formatDollar(double amount) {
+		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance();
+		String output = dollarFormat.format(amount);
+		return output;
+	}
+	
 	/**
 	 * Member Helpers
 	 */
@@ -251,7 +263,7 @@ public class UserInterface {
 			System.out.println("Address: " + result.getMemberAddress());
 			System.out.println("Phone Number: " + result.getMemberPhoneNumber());
 			System.out.println("Join Date: " + formatCalendar(result.getDateJoined()));
-			System.out.println("Fee Paid: " + result.getFeePaid());
+			System.out.println("Fee Paid: " + formatDollar(result.getFeePaid()));
 			// Add a new line
 			System.out.println();
 		}
@@ -271,7 +283,7 @@ public class UserInterface {
 			System.out.println("Member Join Date: " + formatCalendar(result.getDateJoined()));
 			System.out.println("Member Address: " + result.getMemberAddress());
 			System.out.println("Member Phone Number: " + result.getMemberPhoneNumber());
-			System.out.println("Member Fee Paid: $" + result.getFeePaid() + "\n");
+			System.out.println("Member Fee Paid: " + formatDollar(result.getFeePaid()) + "\n");
 		}
 	}
 
@@ -291,9 +303,9 @@ public class UserInterface {
 			String output = " - ";
 			output += "id " + lineItem.getProduct().getProductId();
 			output += ": " + productName;
-			output += " @$" + productPrice;
+			output += " @" + formatDollar(productPrice);
 			output += " Qty: " + quantity;
-			output += " Line: $" + (quantity * productPrice);
+			output += " Line: " + formatDollar(quantity * productPrice);
 			System.out.println(output);
 		}
 
@@ -329,7 +341,7 @@ public class UserInterface {
 			System.out.println("ID: " + result.getTransactionId());
 			System.out.println("Date: " + formatCalendar(result.getTransactionDate()));
 			printTransactionLineItems(result.getLineItems());
-			System.out.println("Total Transaction Cost: $" + result.getCheckoutTotal() + "\n");
+			System.out.println("Total Transaction Cost: " + formatDollar(result.getCheckoutTotal()) + "\n");
 		}
 		System.out.println("--End of transactions--\n");
 	}
@@ -403,7 +415,7 @@ public class UserInterface {
 			output += " ID: " + result.getProductId();
 			output += "\n    - Name: " + result.getProductName();
 			output += "\n    - Qty: " + result.getStockOnHand();
-			output += "\n    - Price: " + result.getCurrentPrice();
+			output += "\n    - Price: " + formatDollar(result.getCurrentPrice());
 			output += "\n    - Reorder Qty: " + result.getReorderLevel();
 			System.out.println(output);
 		}
@@ -448,7 +460,7 @@ public class UserInterface {
 			System.out.println("ID: " + result.getProductId());
 			System.out.println("Name: " + result.getProductName());
 			System.out.println("In Stock: " + result.getStockOnHand());
-			System.out.println("Current Price: " + result.getCurrentPrice());
+			System.out.println("Current Price: " + formatDollar(result.getCurrentPrice()));
 			System.out.println("Reorder Level: " + result.getReorderLevel());
 			// Print new line to help readability
 			System.out.println();
@@ -509,8 +521,8 @@ public class UserInterface {
 						"There is no valid product with ID " + checkoutItemRequest.getProductId());
 			}
 
-			System.out.println("Line Total: $" + lineItemResult.getLineTotal());
-			System.out.println("Total Cost: $" + lineItemResult.getCheckoutTotal());
+			System.out.println("Line Total: " + formatDollar(lineItemResult.getLineTotal()));
+			System.out.println("Total Cost: " + formatDollar(lineItemResult.getCheckoutTotal()));
 
 			boolean shouldContinue = getYesOrNoInput("Add more items for checkout? (yes/no): ");
 			if (!shouldContinue) {
@@ -557,8 +569,8 @@ public class UserInterface {
 			System.out.println("Failed to update product price.");
 			return;
 		}
-		System.out.println("New price for " + priceChangeResult.getProductName() + " is $"
-				+ priceChangeResult.getCurrentPrice());
+		System.out.println("New price for " + priceChangeResult.getProductName() + " is "
+				+ formatDollar(priceChangeResult.getCurrentPrice()));
 		return;
 	}
 	
