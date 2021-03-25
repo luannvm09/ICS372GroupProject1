@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 
-public class Order implements Serializable{
+public class Order implements Serializable {
 	private String orderId;
 	private Product product;
 	private int quantity;
@@ -45,13 +45,14 @@ public class Order implements Serializable{
 	public Calendar getDate() {
 		return this.date;
 	}
+
 	/**
 	 * save method
 	 */
 	public static void save(ObjectOutputStream output) throws IOException {
 		output.writeObject(idCounter);
 	}
-	
+
 	/**
 	 * retrieve counter value
 	 */
@@ -59,12 +60,13 @@ public class Order implements Serializable{
 			throws IOException, ClassNotFoundException {
 		Order.idCounter = (int) input.readObject();
 	}
-	
+
 
 	@Override
 	public String toString() {
-		return "Order [product id=" + this.product.getProductId() + ", product name="
-				+ this.product.getProductName() + ", quantity=" + this.quantity + "]";
+		return "Order [ id = " + this.orderId + " product id=" + this.product.getProductId()
+				+ ", product name=" + this.product.getProductName() + ", quantity=" + this.quantity
+				+ "]";
 	}
 
 }

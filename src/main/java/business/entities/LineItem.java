@@ -2,10 +2,15 @@ package business.entities;
 
 import java.io.Serializable;
 
+/**
+ * LineItem class that represents a product being bought in a transaction. The LineItem keeps track
+ * of the product, quantity and lineTotal.
+ */
 public class LineItem implements Serializable {
     private static final long serialVersionUID = 1L;
-    // Fields
+    // product being purchased in transaction
     private Product product;
+    // quantity of product being ordered
     private int quantity;
     private double lineTotal;
 

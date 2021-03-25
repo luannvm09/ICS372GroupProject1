@@ -86,8 +86,8 @@ public class Grocery implements Serializable {
 		 * @return the removed order item if it was removed, else null
 		 */
 		public Order removeOrder(String orderId) {
-			Iterator<Order> matchedOrders = new FilteredIterator<Order>(this.orders.iterator(),
-					order -> order.getOrderId() == orderId);
+			Iterator<Order> matchedOrders = new FilteredIterator<Order>(this.iterator(),
+					order -> order.getOrderId().equals(orderId));
 
 			if (!matchedOrders.hasNext()) {
 				return null;
