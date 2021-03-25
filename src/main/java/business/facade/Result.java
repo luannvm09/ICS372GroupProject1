@@ -10,14 +10,11 @@ package business.facade;
 
 public class Result extends DataTransfer {
     public static final int PRODUCT_NOT_FOUND = 1;
-    public static final int PRODUCT_NOT_PURCHASED = 2;
-    public static final int PRODUCT_PURCHASED = 3;
-    public static final int PRODUCT_EMPTY = 4;
-    public static final int OPERATION_COMPLETED = 5;
-    public static final int OPERATION_FAILED = 6;
-    public static final int NO_SUCH_MEMBER = 7;
-    public static final int TRANSACTION_NOT_FOUND = 8;
-    public static final int ORDER_NOT_FOUND = 9;
+    public static final int OPERATION_COMPLETED = 2;
+    public static final int OPERATION_FAILED = 3;
+    public static final int NO_SUCH_MEMBER = 4;
+    public static final int TRANSACTION_NOT_FOUND = 5;
+    public static final int ORDER_NOT_FOUND = 6;
 
     private int resultCode;
 
