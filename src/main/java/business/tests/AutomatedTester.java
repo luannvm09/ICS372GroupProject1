@@ -3,9 +3,11 @@ package business.tests;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Random;
+
 import business.entities.Member;
 import business.entities.Product;
 import business.facade.Grocery;
@@ -23,7 +25,7 @@ public class AutomatedTester {
 			{"i1", "i2", "i3", "i4", "i5", "i6", "i7", "i8", "i9", "i10", "i11", "i12", "i13",
 					"i14", "i15", "i16", "i17", "i18", "i19", "i20", "i21", "i22", "i23"};
 	private final String[] productName =
-			{"p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p12", "p11", "p12",
+			{"p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12",
 					"p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23"};
 	private final int[] currentStock = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 19, 18,
 			17, 16, 15, 14, 13, 12, 11};
@@ -44,6 +46,7 @@ public class AutomatedTester {
 			Request.instance().setMemberName(names[count]);
 			Request.instance().setMemberPhoneNumber(phones[count]);
 			Request.instance().setFeePaid(fees[count]);
+			Request.instance().setDateJoined(Calendar.getInstance());
 			Result result = grocery.addMember(Request.instance());
 			assert result.getResultCode() == Result.OPERATION_COMPLETED;
 			assert result.getMemberName().equals(names[count]);
@@ -63,8 +66,12 @@ public class AutomatedTester {
 		Request.instance().setMemberId("M1");
 		result = grocery.removeMember(Request.instance());
 		assert result.getResultCode() == Result.OPERATION_COMPLETED;
-		// more asserts needed
-
+		// test member was removed
+		Iterator<Result> memberResults = grocery.getMembers();
+		while (memberResults.hasNext()) {
+			Result memberResult = memberResults.next();
+			assert !memberResult.getMemberId().equals("M1");
+		}
 	}
 
 	/**
@@ -84,7 +91,14 @@ public class AutomatedTester {
 			assert result.getStockOnHand() == currentStock[count];
 			assert result.getCurrentPrice() == currentPrice[count];
 			assert result.getReorderLevel() == reorderQty[count];
-			// add a test for ordering products after adding them
+		}
+		// test for ordering products after adding them
+		Iterator<Result> orderResults = grocery.getOutstandingOrders();
+		int count = 0;
+		while (orderResults.hasNext()) {
+			Result orderResult = orderResults.next();
+			assert orderResult.getOrderProduct().equals(products[count]);
+			count++;
 		}
 	}
 
@@ -234,4 +248,5 @@ public class AutomatedTester {
 		testProcessShipment();
 		testChangePrice();
 	}
+
 }
