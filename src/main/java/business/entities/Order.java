@@ -59,5 +59,12 @@ public class Order implements Serializable{
 			throws IOException, ClassNotFoundException {
 		Order.idCounter = (int) input.readObject();
 	}
+	
+
+	@Override
+	public String toString() {
+		return "Order [product id=" + this.product.getProductId() + ", product name="
+				+ this.product.getProductName() + ", quantity=" + this.quantity + "]";
+	}
 
 }

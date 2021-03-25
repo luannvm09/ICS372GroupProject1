@@ -106,6 +106,15 @@ public class Transaction implements Serializable {
 	}
 	
 	/**
+	 * String form of the transaction
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return (this.transactionId + ": " + this.lineItems.size() + " Items in transaction");
+	}
+
+	/**
 	 * method to retrieve data
 	 */
 	public static void retrieve(ObjectInputStream input)
@@ -121,4 +130,5 @@ public class Transaction implements Serializable {
 		output.writeObject(idCounter);
 	}
 
+	
 }

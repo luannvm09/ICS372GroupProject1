@@ -103,6 +103,14 @@ public class Member implements Serializable {
 		return this.feePaid;
 	}
 
+	/**
+	 * returns string representation of member object
+	 */
+	@Override
+	public String toString() {
+		return "Member name " + this.memberName + "; date joined " + this.dateJoined + "; address "
+				+ this.memberAddress + "; phone number " + this.memberPhoneNumber;
+	}
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the members ID's are

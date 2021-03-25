@@ -59,6 +59,8 @@ public class Product implements Serializable {
 	public void setCurrentPrice(double currentPrice) {
 		this.currentPrice = currentPrice;
 	}
+	
+	
 
 	/**
 	 * Hash code method produces a unique hash code for each instance assuming the products ID's are
@@ -103,6 +105,16 @@ public class Product implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * returns string representation of product object
+	 */
+	@Override
+	public String toString() {
+		return "Product name " + this.productName + "; id " + this.productId + "; stock on hand "
+				+ this.stockOnHand + "; price $ " + this.currentPrice + "; reorder level "
+				+ this.reorderLevel;
 	}
 
 }
