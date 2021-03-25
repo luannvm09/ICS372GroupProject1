@@ -104,7 +104,7 @@ public class Transaction implements Serializable {
 		return date.get(Calendar.MONTH) + "/" + date.get(Calendar.DATE) + "/"
 				+ date.get(Calendar.YEAR);
 	}
-
+	
 	/**
 	 * String form of the transaction
 	 * 
@@ -113,7 +113,7 @@ public class Transaction implements Serializable {
 	public String toString() {
 		return (this.transactionId + ": " + this.lineItems.size() + " Items in transaction");
 	}
-	
+
 	/**
 	 * method to retrieve data
 	 */
@@ -130,4 +130,5 @@ public class Transaction implements Serializable {
 		output.writeObject(idCounter);
 	}
 
+	
 }

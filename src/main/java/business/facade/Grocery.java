@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 import business.entities.LineItem;
 import business.entities.Member;
 import business.entities.Order;
@@ -63,7 +64,7 @@ public class Grocery implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private List<Order> orders = new LinkedList<Order>();
 
-		public Iterator<Order> getOrders() {
+		public Iterator<Order> getOutstandingOrders() {
 			return this.orders.iterator();
 		}
 
@@ -143,21 +144,6 @@ public class Grocery implements Serializable {
 		}
 
 		/**
-		 * Removes a product from the stock
-		 * 
-		 * @param productId product id
-		 * @return true if product could be removed
-		 */
-		public boolean removeProduct(String productId) {
-			Product product = search(productId);
-			if (product == null) {
-				return false;
-			} else {
-				return products.remove(product);
-			}
-		}
-
-		/**
 		 * Adding a product into the stock
 		 * 
 		 * @param product the product to be added
@@ -183,7 +169,7 @@ public class Grocery implements Serializable {
 		 * @param name string of beginning of product name you want
 		 * @return a list with products whose name starts with name
 		 */
-		public Iterator<Product> retrieveProductsByName(String name) {
+		public Iterator<Product> retrieveProductInfo(String name) {
 			Iterator<Product> iterator = this.products.iterator();
 
 			return new FilteredIterator<Product>(iterator, product -> product.getProductName()
@@ -252,7 +238,7 @@ public class Grocery implements Serializable {
 		 * @param name string of beginning of member name you want
 		 * @return a list with members whose name starts with name
 		 */
-		public Iterator<Member> retrieveMembersByName(String name) {
+		public Iterator<Member> retrieveMemberInfo(String name) {
 			// Convert prefix to lower case to avoid case sensitivity issues.
 			String prefix = name.toLowerCase();
 			Iterator<Member> iterator = this.members.iterator();
@@ -324,7 +310,7 @@ public class Grocery implements Serializable {
 	}
 
 
-	public Result removeMemberByID(Request request) {
+	public Result removeMember(Request request) {
 		Member removedMember = this.members.removeMember(request.getMemberId());
 
 		Result result = new Result();
@@ -347,14 +333,14 @@ public class Grocery implements Serializable {
 	 * @param request the request object which contains specified member name
 	 * @return an iterator of members whose name start with specified string
 	 */
-	public Iterator<Result> retrieveMembersByName(Request request) {
+	public Iterator<Result> retrieveMemberInfo(Request request) {
 		Iterator<Member> filteredMembers =
-				this.members.retrieveMembersByName(request.getMemberName());
+				this.members.retrieveMemberInfo(request.getMemberName());
 
 		return new SafeIterator<Member>(filteredMembers, SafeIterator.MEMBER);
 	}
 
-	public Result retrieveMemberById(Request request) {
+	public Result searchMembership(Request request) {
 		String memberId = request.getMemberId();
 		Member member = this.members.search(memberId);
 		Result result = new Result();
@@ -422,7 +408,7 @@ public class Grocery implements Serializable {
 		return result;
 	}
 
-	public Iterator<Result> retrieveAllProducts() {
+	public Iterator<Result> getProducts() {
 		Iterator<Product> iterator = this.stock.iterator();
 		return new SafeIterator<Product>(iterator, SafeIterator.PRODUCT);
 	}
@@ -433,14 +419,14 @@ public class Grocery implements Serializable {
 	 * @param name the start of the product name you want
 	 * @return an iterator of products whose name start with specified string
 	 */
-	public Iterator<Result> retrieveProductsByName(Request request) {
+	public Iterator<Result> retrieveProductInfo(Request request) {
 		Iterator<Product> filteredProducts =
-				this.stock.retrieveProductsByName(request.getProductName());
+				this.stock.retrieveProductInfo(request.getProductName());
 
 		return new SafeIterator<Product>(filteredProducts, SafeIterator.PRODUCT);
 	}
 
-	public Result updateProductPrice(Request request) {
+	public Result changePrice(Request request) {
 		Result result = new Result();
 		double newPrice = request.getCurrentPrice();
 		Product product = this.stock.search(request.getProductId());
@@ -459,7 +445,7 @@ public class Grocery implements Serializable {
 	 * @return
 	 */
 	public Iterator<Result> getOutstandingOrders() {
-		Iterator<Order> iterator = this.orders.getOrders();
+		Iterator<Order> iterator = this.orders.getOutstandingOrders();
 
 		return new SafeIterator<Order>(iterator, SafeIterator.ORDER);
 	}
@@ -583,7 +569,7 @@ public class Grocery implements Serializable {
 	 * @param request
 	 * @return result
 	 */
-	public Result retrieveProductsById(Request request) {
+	public Result searchProduct(Request request) {
 		String productId = request.getProductId();
 		Product product = this.stock.search(productId);
 		Result result = new Result();
@@ -620,7 +606,7 @@ public class Grocery implements Serializable {
 	/**
 	 * Method to save data from
 	 */
-	public static boolean saveData() {
+	public static boolean save() {
 		try {
 			FileOutputStream dataFile = new FileOutputStream("GroceryData");
 			ObjectOutputStream outputStream = new ObjectOutputStream(dataFile);

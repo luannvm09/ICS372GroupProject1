@@ -68,30 +68,12 @@ public class Member implements Serializable {
 	}
 
 	/**
-	 * Setter for name
-	 * 
-	 * @param newMemberName member's new name
-	 */
-	public void setMemberName(String newMemberName) {
-		this.memberName = newMemberName;
-	}
-
-	/**
 	 * Getter for memberAddress
 	 * 
 	 * @return member address
 	 */
 	public String getMemberAddress() {
 		return this.memberAddress;
-	}
-
-	/**
-	 * Setter for memberAddress
-	 * 
-	 * @param newMemberAddress member's new address
-	 */
-	public void setMemberAddress(String newMemberAddress) {
-		this.memberAddress = newMemberAddress;
 	}
 
 	/**
@@ -104,15 +86,6 @@ public class Member implements Serializable {
 	}
 
 	/**
-	 * Setter for Phone Number
-	 * 
-	 * @param newMemberPhoneNumber member's new phone number
-	 */
-	public void setMemberPhoneNumber(String newMemberPhoneNumber) {
-		this.memberPhoneNumber = newMemberPhoneNumber;
-	}
-
-	/**
 	 * Getter for dateJoined
 	 * 
 	 * @return member date joined
@@ -122,41 +95,12 @@ public class Member implements Serializable {
 	}
 
 	/**
-	 * Setter for dateJoined
-	 * 
-	 * @param newDateJoined member's new date joined
-	 */
-	public void setDateJoined(Calendar dateJoined) {
-		this.dateJoined = dateJoined;
-	}
-
-	/**
 	 * Getter for feePaid
 	 * 
 	 * @return member fee paid
 	 */
 	public double getFeePaid() {
 		return this.feePaid;
-	}
-
-	/**
-	 * Setter for feePaid
-	 * 
-	 * @param newFeePaid member's new fee paid
-	 */
-	public void setFeePaid(Double feePaid) {
-		this.feePaid = feePaid;
-	}
-
-
-	/**
-	 * a way of representing member different from toString
-	 * 
-	 * @return string representation of member object
-	 */
-	public String output() {
-		return "Member id " + this.memberId + "; address " + this.memberAddress + "; fee paid $"
-				+ this.feePaid;
 	}
 
 	/**
