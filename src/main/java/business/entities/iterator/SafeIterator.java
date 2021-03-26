@@ -14,13 +14,10 @@ import business.entities.iterator.SafeIterator.Type.SafeTransaction;
 import business.facade.Result;
 
 /**
- * This Iterator implementation is tailor-made to supply "read-only" versions of Product and Member
- * objects. It is generic. If the user chooses Product for the generic parameter, they should also
- * supply SafeIterator.PRODUCT as the second parameter to the constructor. Similarly, if they choose
- * Member instead, they should also choose SafeIterator.MEMBER as the second parameter of
- * constructor.
+ * Adapter around an iterator that copies items in the adaptee to another object. This makes the
+ * iterator yield read only items.
  *
- * @param <T> Either Product or Member
+ * @param <T> Product, Member, Order, or Transaction
  */
 public class SafeIterator<T> implements Iterator<Result> {
     private Iterator<T> iterator;
@@ -38,8 +35,8 @@ public class SafeIterator<T> implements Iterator<Result> {
      **/
     public abstract static class Type {
         /**
-         * The copy method is used to copy the object to Result. Object is Product or Member at
-         * present.
+         * The copy method is used to copy the object to Result. Object is Product, Member,
+         * Transaction, or Order
          * 
          * @param result the Result object
          * @param object the Product or Member object
@@ -80,13 +77,13 @@ public class SafeIterator<T> implements Iterator<Result> {
     }
 
     /**
-     * The user of SafeIterator must supply an Iterator to Product or Member. If Iterator<Product>
-     * is passed as the first parameter, SafeItearator.PRODUCT should be passed as the second
-     * parameter. If Iterator<Member> is passed as the first parameter, SafeItearator.MEMBER should
-     * be the second parameter.
+     * The user of SafeIterator must supply an Iterator to Product, Member, Order, or Transaction.
+     * If Iterator<Product> is passed as the first parameter, SafeItearator.PRODUCT should be passed
+     * as the second parameter. Use the other safe types for the other supported object types.
      * 
-     * @param iterator Iterator<Product> or Iterator<Member>
-     * @param type     SafeItearator.PRODUCT or SafeItearator.MEMBER
+     * @param iterator Iterator<Member>, Iterator<Product>, Iterator<Order> or Iterator<Transaction>
+     * @param type     SafeItearator.PRODUCT, SafeItearator.MEMBER, SafeIterator.Order or
+     *                 SafeIterator.Transaction
      */
     public SafeIterator(Iterator<T> iterator, Type type) {
         this.iterator = iterator;

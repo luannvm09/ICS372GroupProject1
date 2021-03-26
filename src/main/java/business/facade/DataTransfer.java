@@ -9,13 +9,15 @@ import business.entities.Product;
 import business.entities.Transaction;
 
 /**
- * DataTransfer is a class that will carry out the transfer of data from the UI and the GroceryStore
- * class. It will store the instance variables of both member and product. These fields can be
- * supplied and sent in a request, or used to return values in a result.
- * 
- * @author jordan dodd
+ * DataTransfer is a class that carries out the transfer of data from the UI and the GroceryStore
+ * class. It stores the instance variables of the entity classes. These fields can be supplied and
+ * sent in a request, or used to return values in a result.
  */
 public abstract class DataTransfer {
+	/**
+	 * When reset() is called, all of the instance variables are assigned the "none" values instead
+	 * of null. These constants are the none values associated to various data types.
+	 */
 	private final static int NONE_INT = Integer.MIN_VALUE;
 	private final static double NONE_DOUBLE = Double.MIN_VALUE;
 	private final static String NONE_STRING = "none";
@@ -60,7 +62,7 @@ public abstract class DataTransfer {
 	}
 
 	/**
-	 * Getters and setters
+	 * Member getters and setters
 	 */
 	public String getMemberId() {
 		return this.memberId;
@@ -110,6 +112,9 @@ public abstract class DataTransfer {
 		this.feePaid = feePaid;
 	}
 
+	/**
+	 * Product getters and setters
+	 */
 	public String getProductId() {
 		return this.productId;
 	}
@@ -150,6 +155,9 @@ public abstract class DataTransfer {
 		this.reorderLevel = reorderLevel;
 	}
 
+	/**
+	 * Order getters and setters
+	 */
 	public String getOrderId() {
 		return this.orderId;
 	}
@@ -182,6 +190,9 @@ public abstract class DataTransfer {
 		this.orderDate = orderDate;
 	}
 
+	/**
+	 * Transaction getters and setters
+	 */
 	public String getTransactionId() {
 		return transactionId;
 	}
@@ -231,10 +242,9 @@ public abstract class DataTransfer {
 	}
 
 	/**
-	 * This class will set the product fields with the values from a passed in product. It will
-	 * leave the member fields in this DataTransfer = DataTransfer.NONE_STRING
+	 * Set all the product related fields in the DTO with a provided Product object
 	 * 
-	 * @param product
+	 * @param product Product used to assign the DTO's product fields
 	 */
 	public void setProductFields(Product product) {
 		this.productId = product.getProductId();
@@ -244,6 +254,11 @@ public abstract class DataTransfer {
 		this.reorderLevel = product.getReorderLevel();
 	}
 
+	/**
+	 * Set all the member related fields in the DTO with a provided Member object
+	 * 
+	 * @param member Product used to assign the DTO's member fields
+	 */
 	public void setMemberFields(Member member) {
 		this.memberId = member.getMemberId();
 		this.memberName = member.getMemberName();
@@ -253,6 +268,11 @@ public abstract class DataTransfer {
 		this.dateJoined = member.getDateJoined();
 	}
 
+	/**
+	 * Set all the order related fields in the DTO with a provided Order object
+	 * 
+	 * @param order Order used to assign the DTO's order fields
+	 */
 	public void setOrderFields(Order order) {
 		this.orderId = order.getOrderId();
 		this.orderProduct = order.getProduct();
@@ -260,6 +280,11 @@ public abstract class DataTransfer {
 		this.orderDate = order.getDate();
 	}
 
+	/**
+	 * Set all the transaction related fields in the DTO with a provided Transaction object
+	 * 
+	 * @param transaction Transaction used to assign the DTO's transaction fields
+	 */
 	public void setTransactionFields(Transaction transaction) {
 		this.transactionId = transaction.getTransactionId();
 		this.transactionDate = transaction.getDate();
@@ -268,12 +293,9 @@ public abstract class DataTransfer {
 	}
 
 	/**
-	 * Reset sets all fields to a default value of NONE or constants NONE_INT and NONE_DOUBLE.
-	 * reset() does not return null values, so it is clear when a field does not contain meaningful
-	 * data. Constants are used as to not confuse a sentinel value for an actual requested value.
-	 * 
-	 * @param
-	 * @return void
+	 * Reset all fields to a default value that is dependent on the field's data type. reset() does
+	 * not return null values, so it is clear when a field does not contain meaningful data.
+	 * Constants are used as to not confuse a sentinel value for an actual requested value.
 	 */
 	public void reset() {
 		// member fields
