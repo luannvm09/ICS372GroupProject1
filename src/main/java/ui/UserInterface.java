@@ -215,7 +215,7 @@ public class UserInterface {
 	/**
 	 * method to format dollar amounts
 	 * 
-	 * @param amount amount in dollar to format
+	 * @param amount - amount in dollar to format
 	 * @return the proper format in the form of a string
 	 */
 	private String formatDollar(double amount) {
@@ -522,6 +522,9 @@ public class UserInterface {
 				System.out.println(
 						"There is no valid product with ID " + checkoutItemRequest.getProductId());
 			}
+			Result productInformation = grocery.searchProduct(checkoutItemRequest);
+			System.out.println("Product name: " + productInformation.getProductName());
+			System.out.println("Unit price: " + formatDollar(productInformation.getCurrentPrice()));
 			System.out.println("Line Total: " + formatDollar(lineItemResult.getLineTotal()));
 			System.out.println("Total Cost: " + formatDollar(lineItemResult.getCheckoutTotal()));
 			boolean shouldContinue = getYesOrNoInput("Add more items for checkout? (yes/no): ");
