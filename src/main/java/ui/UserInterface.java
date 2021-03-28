@@ -526,8 +526,10 @@ public class UserInterface {
 						"There is no valid product with ID " + checkoutItemRequest.getProductId());
 			}
 			Result productInformation = grocery.searchProduct(checkoutItemRequest);
+			System.out.println("--------------");
 			System.out.println("Product name: " + productInformation.getProductName());
 			System.out.println("Unit price: " + formatDollar(productInformation.getCurrentPrice()));
+			System.out.println("Quantity: " + checkoutItemRequest.getCheckoutQuantity());
 			System.out.println("Line Total: " + formatDollar(lineItemResult.getLineTotal()));
 			System.out.println("Total Cost: " + formatDollar(lineItemResult.getCheckoutTotal()));
 			boolean shouldContinue = getYesOrNoInput("Add more items for checkout? (yes/no): ");
