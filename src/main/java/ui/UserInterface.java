@@ -219,7 +219,7 @@ public class UserInterface {
 	/**
 	 * method to format dollar amounts
 	 * 
-	 * @param amount amount in dollar to format
+	 * @param amount - amount in dollar to format
 	 * @return the proper format in the form of a string
 	 */
 	private String formatDollar(double amount) {
@@ -293,7 +293,7 @@ public class UserInterface {
 	 */
 	public void listMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
-		System.out.println("\n\t---Members---\n");
+		System.out.println("\n---Members---\n");
 		while (iterator.hasNext()) {
 			Result result = iterator.next();
 			System.out.println("Member ID: " + result.getMemberId());
@@ -526,6 +526,11 @@ public class UserInterface {
 				System.out.println(
 						"There is no valid product with ID " + checkoutItemRequest.getProductId());
 			}
+			Result productInformation = grocery.searchProduct(checkoutItemRequest);
+			System.out.println("--------------");
+			System.out.println("Product name: " + productInformation.getProductName());
+			System.out.println("Unit price: " + formatDollar(productInformation.getCurrentPrice()));
+			System.out.println("Quantity: " + checkoutItemRequest.getCheckoutQuantity());
 			System.out.println("Line Total: " + formatDollar(lineItemResult.getLineTotal()));
 			System.out.println("Total Cost: " + formatDollar(lineItemResult.getCheckoutTotal()));
 			boolean shouldContinue = getYesOrNoInput("Add more items for checkout? (yes/no): ");
