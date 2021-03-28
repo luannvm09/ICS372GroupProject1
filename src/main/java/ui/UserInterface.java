@@ -289,7 +289,7 @@ public class UserInterface {
 	 */
 	public void listMembers() {
 		Iterator<Result> iterator = grocery.getMembers();
-		System.out.println("\n\t---Members---\n");
+		System.out.println("\n---Members---\n");
 		while (iterator.hasNext()) {
 			Result result = iterator.next();
 			System.out.println("Member ID: " + result.getMemberId());
