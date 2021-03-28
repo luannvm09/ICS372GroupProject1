@@ -135,8 +135,9 @@ public class UserInterface {
 				Integer userIntegerInput = Integer.valueOf(rawUserInput);
 				if(userIntegerInput.intValue() < 0) {
 					System.out.println("Input must be a positive number\n" + "Enter " + HELP + " for help");
+				} else {
+					return userIntegerInput.intValue();
 				}
-				else return userIntegerInput.intValue();
 			} catch (NumberFormatException nfe) {
 				System.out
 						.println("Input not valid\n" + "Enter " + HELP + " for help");
