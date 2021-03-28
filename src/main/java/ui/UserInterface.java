@@ -133,10 +133,13 @@ public class UserInterface {
 			try {
 				String rawUserInput = getFirstWord(message);
 				Integer userIntegerInput = Integer.valueOf(rawUserInput);
-				return userIntegerInput.intValue();
+				if(userIntegerInput.intValue() < 0) {
+					System.out.println("Input must be a positive number\n" + "Enter " + HELP + " for help");
+				}
+				else return userIntegerInput.intValue();
 			} catch (NumberFormatException nfe) {
 				System.out
-						.println("Input must be a number 0 - 14\n" + "Enter " + HELP + " for help");
+						.println("Input not valid\n" + "Enter " + HELP + " for help");
 			}
 		} while (true);
 	}
