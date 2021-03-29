@@ -134,13 +134,13 @@ public class UserInterface {
 				String rawUserInput = getFirstWord(message);
 				Integer userIntegerInput = Integer.valueOf(rawUserInput);
 				if(userIntegerInput.intValue() < 0) {
-					System.out.println("Input must be a positive number\n" + "Enter " + HELP + " for help");
+					System.out.println("Input must be a positive integer!");
 				} else {
 					return userIntegerInput.intValue();
 				}
 			} catch (NumberFormatException nfe) {
 				System.out
-						.println("Input not valid\n" + "Enter " + HELP + " for help");
+						.println("Please enter a valid integer value!");
 			}
 		} while (true);
 	}
@@ -150,13 +150,18 @@ public class UserInterface {
 	 * Method to get user inputs in form of a double
 	 * 
 	 * @param message prompt to display to user
-	 * @return user inputted double
+	 * @return user input double
 	 */
 	private double getDoubleInput(String message) {
 		do {
 			try {
 				String rawUserInput = getFirstWord(message);
-				return Double.parseDouble(rawUserInput);
+				Double userDoubleInput = Double.parseDouble(rawUserInput);
+				if(userDoubleInput.doubleValue() < 0) {
+					System.out.println("Input must be a positive number!");
+				} else {
+					return userDoubleInput.doubleValue();
+				}
 			} catch (NumberFormatException nfe) {
 				System.out.println("Input must be in integer or decimal form. Try again.");
 			}
